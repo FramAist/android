@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="26dp">
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="78dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_arrow_left_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="构图推荐"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/ivBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivBack" />
+
+    <com.angcyo.tablayout.DslTabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_tab_recommend_list"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivBack">
+
+
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/tabRecommend"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="5dp"
+            android:gravity="center"
+            android:text="推荐"
+            android:textColor="@color/white"
+            app:shape_radius="20dp"
+            app:shape_solidColor="@color/blue_375af6" />
+
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/tabClose"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="5dp"
+            android:gravity="center"
+            android:text="近景"
+            android:textColor="@color/white"
+            app:shape_radius="20dp"
+            app:shape_solidColor="@color/blue_375af6" />
+
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/tabMedium"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="5dp"
+            android:background="@color/trans"
+            android:gravity="center"
+            android:text="中景"
+            android:textColor="@color/white"
+            app:shape_radius="20dp"
+            app:shape_solidColor="@color/trans" />
+
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/tabFar"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="5dp"
+            android:gravity="center"
+            android:text="远景"
+            android:textColor="@color/white"
+            app:shape_radius="20dp"
+            app:shape_solidColor="@color/blue_375af6" />
+
+    </com.angcyo.tablayout.DslTabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

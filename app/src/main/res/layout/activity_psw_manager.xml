@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="26dp">
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivBack"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="78dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_arrow_left_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+    <TextView
+        android:id="@+id/tv0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="密码管理"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/ivBack"
+        app:layout_constraintStart_toEndOf="@id/ivBack"
+        app:layout_constraintTop_toTopOf="@id/ivBack" />
+
+    <com.hjq.shape.layout.ShapeConstraintLayout
+        android:id="@+id/clAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:padding="@dimen/dp12"
+        app:layout_constraintTop_toBottomOf="@id/tv0"
+        app:shape_radius="8dp"
+        app:shape_solidColor="@color/black_2d">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="当前密码"
+            android:textColor="@color/black_d2d5da"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.hjq.shape.view.ShapeEditText
+            android:id="@+id/etPsw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="请输入当前密码"
+            android:inputType="textPassword"
+            android:paddingStart="40dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray_9da3ae"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/tv1"
+            app:shape_radius="8dp"
+            app:shape_solidColor="#242424"
+            app:shape_strokeColor="#373d48"
+            app:shape_strokeSize="1dp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_lock_grey"
+            app:layout_constraintBottom_toBottomOf="@id/etPsw"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etPsw" />
+
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="新密码"
+            android:textColor="@color/black_d2d5da"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etPsw" />
+
+        <com.hjq.shape.view.ShapeEditText
+            android:id="@+id/etNewPsw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="请输入新密码"
+            android:inputType="textPassword"
+            android:paddingStart="40dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray_9da3ae"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/tv2"
+            app:shape_radius="8dp"
+            app:shape_solidColor="#242424"
+            app:shape_strokeColor="#373d48"
+            app:shape_strokeSize="1dp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_lock_grey"
+            app:layout_constraintBottom_toBottomOf="@id/etNewPsw"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etNewPsw" />
+
+        <TextView
+            android:id="@+id/tvNewPswTips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="不少于8位,至少包含1个数字和1个字母"
+            android:textColor="@color/gray_9da3ae"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etNewPsw" />
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="确认新密码"
+            android:textColor="@color/black_d2d5da"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvNewPswTips" />
+
+        <com.hjq.shape.view.ShapeEditText
+            android:id="@+id/etConfirmNewPsw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="请再次输入新密码"
+            android:inputType="textPassword"
+            android:paddingStart="40dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray_9da3ae"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/tv3"
+            app:shape_radius="8dp"
+            app:shape_solidColor="#242424"
+            app:shape_strokeColor="#373d48"
+            app:shape_strokeSize="1dp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/iv3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_lock_grey"
+            app:layout_constraintBottom_toBottomOf="@id/etConfirmNewPsw"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etConfirmNewPsw" />
+
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/tvSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="确认修改"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etConfirmNewPsw"
+            app:shape_radius="8dp"
+            app:shape_solidColor="@color/blue_2a5bff" />
+
+    </com.hjq.shape.layout.ShapeConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:paddingHorizontal="26dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/title_height"
+            android:text="我的"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/tv0">
+
+            <ImageView
+                android:id="@+id/icAccount"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@drawable/bg_account"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_account_b1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="小明"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tvDesc"
+                app:layout_constraintStart_toEndOf="@id/icAccount"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="内测用户"
+                android:textColor="@color/gray_9da3ae"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintStart_toEndOf="@id/icAccount"
+                app:layout_constraintTop_toBottomOf="@id/tvNickName" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/clMyCollect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp12"
+            app:layout_constraintTop_toBottomOf="@id/clAccount"
+            app:shape_radiusInTopLeft="8dp"
+            app:shape_radiusInTopRight="8dp"
+            app:shape_solidColor="@color/black_2d">
+
+            <com.hjq.shape.view.ShapeImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_my_collect"
+                app:shape_solidColor="#dee9fc"
+                app:shape_type="oval" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="我的收藏"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp14" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <View
+            android:id="@+id/viewLine0"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:background="@color/black_1a"
+            app:layout_constraintTop_toBottomOf="@id/clMyCollect" />
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/clHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp12"
+            app:layout_constraintTop_toBottomOf="@id/viewLine0"
+            app:shape_radiusInBottomLeft="8dp"
+            app:shape_radiusInBottomRight="8dp"
+            app:shape_solidColor="@color/black_2d">
+
+            <com.hjq.shape.view.ShapeImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="7dp"
+                android:src="@drawable/ic_mine_history"
+                app:shape_solidColor="#e2fbe8"
+                app:shape_type="oval" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="拍摄历史"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp14" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="最近构图"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clHistory" />
+
+        <TextView
+            android:id="@+id/tvMoreHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="更多"
+            android:textColor="@color/blue_2a5bff"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clHistory" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tvMoreHistory" />
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/clSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/rvHistory"
+            app:shape_radiusInTopLeft="8dp"
+            app:shape_radiusInTopRight="8dp"
+            app:shape_solidColor="@color/black_2d">
+
+            <com.hjq.shape.view.ShapeImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="@dimen/dp10"
+                android:src="@drawable/ic_setting"
+                app:shape_solidColor="#f3f4f6"
+                app:shape_type="oval" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="设置"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp14" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <View
+            android:id="@+id/viewLine1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:background="@color/black_1a"
+            app:layout_constraintTop_toBottomOf="@id/clSetting" />
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/clHelpCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/viewLine1"
+            app:shape_solidColor="@color/black_2d">
+
+            <com.hjq.shape.view.ShapeImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_mine_help"
+                app:shape_solidColor="#f1e8fd"
+                app:shape_type="oval" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="帮助中心"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp14" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <View
+            android:id="@+id/viewLine2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:background="@color/black_1a"
+            app:layout_constraintTop_toBottomOf="@id/clHelpCenter" />
+
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/clLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/viewLine2"
+            app:shape_radiusInBottomLeft="8dp"
+            app:shape_radiusInBottomRight="8dp"
+            app:shape_solidColor="@color/black_2d">
+
+            <com.hjq.shape.view.ShapeImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_mine_logout"
+                app:shape_solidColor="#f9e3e2"
+                app:shape_type="oval" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="退出登录"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp14" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_right_gray_9da3ae"
+                app:layout_constraintBottom_toBottomOf="@id/icAccount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icAccount" />
+
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="FramAsit v0.0.1 (MVP)"
+            android:textColor="@color/gray_9da3ae"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clLogout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

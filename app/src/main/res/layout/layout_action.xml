@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnTakePhoto"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/ic_take_photo_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivClock"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="20dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_clock_white"
+        app:layout_constraintEnd_toStartOf="@id/ivLight"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivLight"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="20dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_close_flash"
+        app:layout_constraintEnd_toStartOf="@id/tvRatio"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/tvRatio"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:src="@drawable/ic_ratio_16_9_white"
+        android:text="16:9"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+    <TextView
+        android:id="@+id/tvCountDownTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/btnTakePhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="3" />
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivRecommendPic"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/bg_tab_recommend_list"
+        android:padding="1dp"
+        app:layout_constraintBottom_toTopOf="@id/btnTakePhoto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shape_radius="8dp" />
+
+    <ProgressBar
+        android:id="@+id/exposureProgress"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        android:layout_width="200dp"
+        android:layout_height="5dp"
+        android:layout_marginEnd="-80dp"
+        android:background="@color/gray_9da3ae"
+        android:max="100"
+        android:progress="50"
+        android:progressTint="@color/white"
+        android:rotation="270"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="180dp"
+        android:text="亮"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="30dp"
+        android:text="暗"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivClose"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="80dp"
+        android:padding="13dp"
+        android:src="@drawable/ic_close_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_solidColor="@color/black_33"
+        app:shape_type="oval" />
+
+    <com.hjq.shape.view.ShapeImageView
+        android:id="@+id/ivFocus"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/ic_camera_focus"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/viewFinder"
+        app:layout_constraintTop_toTopOf="@id/viewFinder"
+        app:shape_type="oval" />
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/tv_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:shape_solidColor="#1C1E20"
+        app:shape_radius="4dp"
+        android:textColor="@color/white"
+        android:paddingVertical="5dp"
+        android:textSize="12sp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivClose"
+        tools:text="未检测到图片" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tv0,tv1,exposureProgress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,16 @@
+[
+  {
+    "path": "entrance",
+    "className": "com.zss.framaist.entrance.MainActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "splash",
+    "className": "com.zss.framaist.entrance.EntranceActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  }
+]
