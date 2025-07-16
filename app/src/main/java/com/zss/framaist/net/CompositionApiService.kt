@@ -2,12 +2,14 @@ package com.zss.framaist.net
 
 import com.zss.common.net.ApiResponse
 import com.zss.framaist.bean.AnalyzeResp
+import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * 聊天模块api
@@ -31,5 +33,11 @@ interface CompositionApiService {
      */
     @POST("v1/composition/suggestions/confirm")
     suspend fun compositionConfirm(@Body body: RequestBody): ApiResponse<String?>
+
+    /**
+     * 获取构图建议列表
+     */
+    @GET("/v1/composition/results")
+    suspend fun getSuggestionList(@Query("number") number: Int): ApiResponse<List<RecommendModel>?>
 
 }

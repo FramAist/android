@@ -2,9 +2,11 @@ package com.zss.framaist.mine
 
 import android.content.Intent
 import android.view.LayoutInflater
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zss.base.ui.BaseFragment
+import com.zss.base.util.collectResumed
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.util.MMKVUtil
 import com.zss.framaist.databinding.UserFragmentMineBinding
@@ -22,12 +24,14 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
 
     private val mAdapter = RecentFramAdapter()
 
+    private val vm: MineVM by viewModels()
+
     override fun fragmentInflater(): ((inflater: LayoutInflater) -> UserFragmentMineBinding) {
         return UserFragmentMineBinding::inflate
     }
 
     override fun initData() {
-
+        vm.getRecentCompose()
     }
 
     override fun initView() {
@@ -57,7 +61,11 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
     }
 
     override fun observe() {
-
+        _binding?.apply {
+            vm.recentList.collectResumed(viewLifecycleOwner) {
+                mAdapter.submitList(it.map { it.image_url })
+            }
+        }
     }
 
 }

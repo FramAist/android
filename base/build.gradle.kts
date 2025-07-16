@@ -82,4 +82,5 @@ dependencies {
     api(libs.third.round.corner.progress.bar)
     api(libs.third.utilcodex)
     api(libs.third.spin.kit)
+    api(libs.androidx.fragment.ktx)
 }
