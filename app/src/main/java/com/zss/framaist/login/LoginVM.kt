@@ -88,15 +88,14 @@ class LoginVM : BaseVM<LoginRepo>() {
             }, { con.resumeWithException(Throwable(it)) })
         }
 
-    suspend fun modifyPsw(old: String, new: String) = suspendCancellableCoroutine<String> { con ->
+    suspend fun modifyPsw(old: String, new: String) = suspendCancellableCoroutine<Boolean> { con ->
         launch({
             val jb = JSONObject().apply {
                 put("old_password", old)
                 put("new_password", new)
             }
-            val res = api.modifyPsw(jb.toRequestBody()).getOrNull()
-            requireNotNull(res)
-            con.resume(res)
+            api.modifyPsw(jb.toRequestBody()).getOrNull()
+            con.resume(true)
         }, { con.resumeWithException(Throwable(it)) })
     }
 

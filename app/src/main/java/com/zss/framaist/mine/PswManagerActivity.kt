@@ -34,7 +34,7 @@ class PswManagerActivity : BaseActivity<ActivityPswManagerBinding>() {
                         gotoModifyResult(it.message)
                     }) {
                         val res = vm.modifyPsw(etPsw.text.toString(), etNewPsw.text.toString())
-                        val errorInfo = if (res != "success") "请重新尝试,确保当前密码正确" else ""
+                        val errorInfo = if (!res) "请重新尝试,确保当前密码正确" else ""
                         gotoModifyResult(errorInfo)
                     }
                 }
