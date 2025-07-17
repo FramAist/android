@@ -70,10 +70,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toTopOf="@id/btnTakePhoto"
+        android:textSize="58sp"
+        app:layout_constraintBottom_toBottomOf="@id/viewFinder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/viewFinder"
         tools:text="3" />
 
     <com.hjq.shape.view.ShapeImageView
@@ -156,15 +157,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:shape_solidColor="#1C1E20"
-        app:shape_radius="4dp"
-        android:textColor="@color/white"
-        android:paddingVertical="5dp"
-        android:textSize="12sp"
         android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivClose"
+        app:shape_radius="4dp"
+        app:shape_solidColor="#1C1E20"
         tools:text="未检测到图片" />
 
     <androidx.constraintlayout.widget.Group

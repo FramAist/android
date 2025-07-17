@@ -39,6 +39,12 @@ import kotlin.coroutines.resumeWithException
 class CameraVM : BaseVM<CameraRepo>() {
 
     /**
+     * 倒计时
+     */
+    private val _countDownTime: MutableStateFlow<Int> = MutableStateFlow(0)
+    val countDownTime = _countDownTime.asStateFlow()
+
+    /**
      * 闪光灯模式
      */
     private val _lightMode: MutableStateFlow<LightMode> = MutableStateFlow(LightMode.CLOSE)
@@ -69,6 +75,10 @@ class CameraVM : BaseVM<CameraRepo>() {
     val picDepth = _picDepth.asStateFlow()
 
     var job: Job? = null
+
+    fun setCountDown(time: Int) {
+        _countDownTime.value = time
+    }
 
     fun setAspectRatio(ratio: Int) {
         _aspectRatio.value = ratio

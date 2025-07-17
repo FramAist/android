@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.camera.core.AspectRatio
 import androidx.core.view.isVisible
 import com.lxj.xpopup.XPopup
-import com.zss.framaist.bean.LightMode
 import com.zss.framaist.fram.ui.CameraActivity
 import com.zss.framaist.fram.ui.RatioPopDialog
 import com.zss.framaist.fram.ui.SplashSelectDialog
@@ -30,7 +29,7 @@ object DialogHelper {
                 .isCenterHorizontal(true)
                 .atView(it)
                 .asCustom(TimePopDialog(this) {
-                    this.startCountDown(it)
+                    vm.setCountDown(it)
                 })
             dialog.show()
         }

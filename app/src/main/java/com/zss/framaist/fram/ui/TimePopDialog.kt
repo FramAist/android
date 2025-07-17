@@ -45,6 +45,10 @@ class TimePopDialog(context: Context, val onTimeSelect: (time: Int) -> Unit) :
                 onTimeSelect.invoke(10)
                 dismiss()
             }
+            tv0s.setOnSingleClickedListener {
+                onTimeSelect.invoke(0)
+                dismiss()
+            }
         }
     }
 

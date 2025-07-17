@@ -441,17 +441,11 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     val dx = event.x - lastX
                     val dy = event.y - lastY
                     //拦截距离上次对焦位置100内的触摸事件
-                    if (abs(dx) + abs(dy) > 5) {
-                        if (abs(dx) > abs(dy)) {
-                            LL.e("xdd 横向移动$dx")
-                        } else {
-                            LL.e("xdd 竖向移动$dy")
-                            camera ?: return@setOnTouchListener false
-                            if (dy > 3) currentExposureIndex -= 1
-                            if (dy < 3) currentExposureIndex += 1
-                            camera?.cameraControl?.setExposureCompensationIndex(currentExposureIndex)
-                            setUpExposureProgress(currentExposureIndex, cameraInfo.exposureState)
-                        }
+                    if (abs(dx) + abs(dy) > 5 && abs(dx) < abs(dy)) {
+                        if (dy > 3) currentExposureIndex -= 1
+                        if (dy < 3) currentExposureIndex += 1
+                        camera?.cameraControl?.setExposureCompensationIndex(currentExposureIndex)
+                        setUpExposureProgress(currentExposureIndex, cameraInfo.exposureState)
                     }
                     lastX = event.x
                     lastY = event.y
@@ -493,7 +487,11 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             handleViewFinderOnTouch()
             btnTakePhoto.setOnSingleClickedListener {
                 mCountDownTimer?.cancel()
-                takePhoto()
+                if (vm.countDownTime.value > 0) {
+                    startCountDown(vm.countDownTime.value)
+                } else {
+                    takePhoto()
+                }
             }
             ivClose.setOnSingleClickedListener {
                 if (binding?.layoutPicture?.root?.isVisible == true) {
@@ -565,6 +563,9 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             .build()
     }
 
+    /**
+     * 绑定imageAnalysis
+     */
     fun bindAnalyze() {
         // 设置 ViewPort
         binding?.layoutCamera?.apply {
