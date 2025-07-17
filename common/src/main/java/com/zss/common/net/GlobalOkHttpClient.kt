@@ -20,8 +20,6 @@ import javax.net.ssl.X509TrustManager
 
 
 object GlobalOkHttpClient {
-
-
     /**
      * 请求头处理拦截器
      * 添加公共参数到请求头中
@@ -32,16 +30,7 @@ object GlobalOkHttpClient {
         Interceptor { chain ->
             try {
                 val request = chain.request().newBuilder()
-//                .addHeader(
-//                    "client_type",
-//                    ClientType.TYPE_ANDROID.toString()
-//                )                // 1为android端
-//                .addHeader("app_version", DeviceUtil.getAppVersion(AppGlobal.sApplication))   // 版本号
                     .addHeader("Authorization", "Bearer ${MMKVUtil.getToken()}")
-//                .addHeader(
-//                    if (MMKVUtil.isMerchantLogin()) "px-authorization-merchant" else "px-authorization-user",
-//                    MMKVUtil.getToken()
-//                )           // 登陆返回的token
                     .addHeader("Content-Type", "application/json;charset=utf-8")
                     .build()
                 chain.proceed(request)

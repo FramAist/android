@@ -1,6 +1,7 @@
 package com.zss.framaist.home
 
 import android.content.Intent
+import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.zss.base.BaseActivity
@@ -35,7 +36,7 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
 
     override fun initView() {
         enterSource = intent.getIntExtra(IntentKey.SOURCE, 0)
-        recommendModel = intent.getParcelableExtra<RecommendModel>(IntentKey.DATA)
+        recommendModel = getParcelableExtra(intent, IntentKey.DATA, RecommendModel::class.java)
         binding?.apply {
             tvTitle.text = recommendModel?.title
             tvDesc.text = recommendModel?.desc

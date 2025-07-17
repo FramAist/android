@@ -69,11 +69,13 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     abstract fun initView()
     abstract fun bindingEvent()
     abstract fun initData()
-    open fun observe() {}
+    open fun observe() {
+        //observe vm
+    }
 
 
     open fun firstResume() {
-
+        // firstTime resume
     }
 
     override fun onResume() {

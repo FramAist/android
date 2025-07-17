@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.util.Rational
@@ -33,6 +32,7 @@ import androidx.camera.core.takePicture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -147,13 +147,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         })
     }
 
-    @Suppress("DEPRECATION")
     override fun initView() {
-        val recommendData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(IntentKey.DATA, RecommendModel::class.java)
-        } else {
-            intent.getParcelableExtra(IntentKey.DATA) as RecommendModel?
-        }
+        val recommendData = getParcelableExtra(intent, IntentKey.DATA, RecommendModel::class.java)
         vm.setRecommendData(recommendData)
         binding?.apply {
             layoutCamera.apply {
