@@ -83,4 +83,5 @@ dependencies {
     api(libs.third.utilcodex)
     api(libs.third.spin.kit)
     api(libs.androidx.fragment.ktx)
+    api(libs.databinding.viewbinding)
 }
