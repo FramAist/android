@@ -24,10 +24,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     val vm: LoginVM by viewModels()
     var mCountDownTimer: CountDownTimer? = null
 
-    override fun initView() {}
-
-    override fun initData() {}
-
     override fun bindingEvent() {
         super.bindingEvent()
         binding?.apply {

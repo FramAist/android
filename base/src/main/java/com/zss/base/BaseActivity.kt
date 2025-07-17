@@ -48,8 +48,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         initData()
         //监听viewMode的数据
         observe()
-        //默认的网络请求
-        getData()
     }
 
     fun showLoading() {
@@ -100,10 +98,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         binding = method.invoke(this, layoutInflater)?.saveAsUnChecked()
     }
 
-    open fun getData() {
-
-    }
-
     override fun onResume() {
         super.onResume()
         AutoSize.autoConvertDensityOfGlobal(this)
@@ -111,20 +105,24 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     open fun preInit() {
-
+        // pre init
     }
 
 
-    abstract fun initView()
-
-    abstract fun initData()
-
-    protected open fun observe() {
-
+    open fun initView() {
+        //init view
     }
 
-    protected open fun bindingEvent() {
+    open fun initData() {
+        //init data
+    }
 
+    open fun observe() {
+        // observe
+    }
+
+    open fun bindingEvent() {
+        // init event
     }
 
     // 字体大小不跟随系统

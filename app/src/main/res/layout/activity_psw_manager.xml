@@ -70,6 +70,18 @@
             app:shape_strokeSize="1dp"
             tools:ignore="RtlSymmetry" />
 
+        <com.hjq.shape.view.ShapeImageView
+            android:id="@+id/ivPswMark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="18dp"
+            android:paddingVertical="10dp"
+            android:src="@drawable/login_login_eye_close"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/etPsw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etPsw" />
+
         <ImageView
             android:id="@+id/iv1"
             android:layout_width="20dp"
@@ -108,6 +120,18 @@
             app:shape_strokeColor="#373d48"
             app:shape_strokeSize="1dp"
             tools:ignore="RtlSymmetry" />
+
+        <com.hjq.shape.view.ShapeImageView
+            android:id="@+id/ivNewPswMark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="18dp"
+            android:paddingVertical="10dp"
+            android:src="@drawable/login_login_eye_close"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/etNewPsw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etNewPsw" />
 
         <ImageView
             android:id="@+id/iv2"
@@ -156,6 +180,18 @@
             app:shape_strokeColor="#373d48"
             app:shape_strokeSize="1dp"
             tools:ignore="RtlSymmetry" />
+
+        <com.hjq.shape.view.ShapeImageView
+            android:id="@+id/ivConfirmNewPswMark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="18dp"
+            android:paddingVertical="10dp"
+            android:src="@drawable/login_login_eye_close"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/etConfirmNewPsw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etConfirmNewPsw" />
 
         <ImageView
             android:id="@+id/iv3"
