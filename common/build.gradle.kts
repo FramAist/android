@@ -42,4 +42,5 @@ android {
 
 dependencies {
     implementation(project(":base"))
+    testApi(libs.androidx.junit)
 }

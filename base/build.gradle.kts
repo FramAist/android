@@ -49,7 +49,7 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)
-
+    testApi(libs.androidx.junit)
     api(libs.androidx.lifecycle.viewmodel.ktx)
     api(libs.androidx.activity)
     api(libs.third.permissionx)
