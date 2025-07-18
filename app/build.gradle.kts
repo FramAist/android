@@ -15,7 +15,6 @@ android {
     defaultConfig {
         applicationId = "com.zss.framaist"
         minSdk = 28
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -32,6 +31,7 @@ android {
             enableV2Signing = true
         }
     }
+
 
     buildTypes {
         debug {
@@ -73,7 +73,6 @@ android {
         abortOnError = false
         checkGeneratedSources = true
     }
-
 
 }
 
