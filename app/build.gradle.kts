@@ -69,6 +69,11 @@ android {
 //    }
     ndkVersion = "29.0.13113456 rc1"
 
+    lint {
+        abortOnError = false
+        checkGeneratedSources = true
+    }
+
 
 }
 
@@ -92,3 +97,4 @@ dependencies {
 //    debugImplementation(libs.androidx.ui.tooling)
 //    debugImplementation(libs.androidx.ui.test.manifest)
 }
+

@@ -9,7 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.Response
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -42,12 +42,7 @@ object GlobalOkHttpClient {
                     .protocol(Protocol.HTTP_1_1)
                     .code(400)
                     .message(e.message ?: "Network error")
-                    .body(
-                        ResponseBody.create(
-                            "text/plain".toMediaType(),
-                            "Network error: ${e.message}"
-                        )
-                    )
+                    .body("Network error: ${e.message}".toResponseBody("text/plain".toMediaType()))
                     .build()
             } catch (e: Exception) {
                 LL.e("xdd err $e  ")
@@ -57,12 +52,7 @@ object GlobalOkHttpClient {
                     .protocol(Protocol.HTTP_1_1)
                     .code(400)
                     .message(e.message ?: "Network error")
-                    .body(
-                        ResponseBody.create(
-                            "text/plain".toMediaType(),
-                            "Network error: ${e.message}"
-                        )
-                    )
+                    .body("Network error: ${e.message}".toResponseBody("text/plain".toMediaType()))
                     .build()
             }
         }

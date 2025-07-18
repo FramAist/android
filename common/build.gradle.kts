@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
     }
 
     buildTypes {
