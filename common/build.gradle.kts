@@ -10,7 +10,6 @@ plugins {
 android {
     namespace = "com.zss.common"
     compileSdk = 35
-    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         minSdk = 26

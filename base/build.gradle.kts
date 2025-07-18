@@ -8,7 +8,6 @@ plugins {
 android {
     namespace = "com.zss.base"
     compileSdk = 35
-    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         minSdk = 26
