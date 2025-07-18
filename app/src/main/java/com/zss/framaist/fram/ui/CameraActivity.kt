@@ -54,6 +54,7 @@ import com.zss.common.util.PermissionUtil
 import com.zss.framaist.R
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
+import com.zss.framaist.bean.UiMode
 import com.zss.framaist.databinding.ActivityCameraBinding
 import com.zss.framaist.fram.CameraDialogHelper
 import com.zss.framaist.fram.CameraVM
@@ -241,18 +242,18 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         vm.uiMode.collectResumed(this) {
             binding?.apply {
                 when (it) {
-                    MODE_CAMERA -> {
+                    UiMode.CAMERA -> {
                         layoutPicture.root.isGone = true
                         layoutLoading.root.isGone = true
                         bindAnalyze()
                     }
 
-                    MODE_PICTURE -> {
+                    UiMode.PICTURE -> {
                         layoutPicture.root.isVisible = true
                         layoutLoading.root.isGone = true
                     }
 
-                    MODE_LOADING -> {
+                    UiMode.LOADING -> {
                         layoutPicture.root.isGone = true
                         layoutLoading.root.isVisible = true
                     }
@@ -288,6 +289,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         if (isTakingPhoto) return
         isTakingPhoto = true
         vm.clearPicture()
+        vm.cancelAnalyze()
         binding?.layoutCamera?.apply {
             viewFinder.post {
                 imageCapture = when (vm.aspectRatio.value) {
@@ -299,7 +301,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     else -> getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                 }
                 try {
-                    cameraProviderFuture.get().unbind(preview)
+                    cameraProviderFuture.get().unbind(preview, imageAnalysis)
                     camera = cameraProviderFuture.get().bindToLifecycle(
                         this@CameraActivity,
                         CameraSelector.DEFAULT_BACK_CAMERA,
@@ -321,7 +323,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                         val rotationDegrees = res?.imageInfo?.rotationDegrees ?: return@safeLaunch
                         val bitmap = res.toBitmap() ?: return@safeLaunch
                         val correctedBitmap = rotateBitmap(bitmap, rotationDegrees) // 旋转修正
-                        vm.setUiMode(MODE_PICTURE)
+                        vm.setUiMode(UiMode.PICTURE)
                         vm.setPicture(correctedBitmap)
                         vm.analyzeImage(correctedBitmap)
                         res.close() // 必须手动释放资源！
@@ -366,7 +368,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     }
 
     fun resetPicture() {
-        vm.setUiMode(MODE_CAMERA)
+        vm.setUiMode(UiMode.CAMERA)
         binding?.layoutCamera?.ivRecommendPic?.isVisible = false
         isTakingPhoto = false
         isPreSubmit = false
@@ -516,7 +518,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     private fun bindPictureLayout() {
         binding?.layoutPicture?.apply {
             btnRePicture.setOnSingleClickedListener {
-                vm.setUiMode(MODE_CAMERA)
+                vm.setUiMode(UiMode.CAMERA)
             }
             btnSave.setOnSingleClickedListener {
                 // 保存图片
@@ -530,7 +532,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     return@setOnSingleClickedListener
                 }
                 //生成了图片,但是没分析完景深
-
                 if (vm.tempPic.value != null && vm.picDepth.value == null) {
                     showLoading()
                     isPreSubmit = true

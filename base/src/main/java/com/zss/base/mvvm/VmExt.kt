@@ -7,6 +7,7 @@ import com.zss.base.BaseApplication
 import com.zss.base.util.LL
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.FileNotFoundException
@@ -26,8 +27,8 @@ fun ViewModel.launch(
     onError: (msg: String) -> Unit = {},
     onComplete: () -> Unit = {},
     showToast: Boolean = true,
-) {
-    viewModelScope.launch(CoroutineExceptionHandler { _, e ->
+): Job {
+    return viewModelScope.launch(CoroutineExceptionHandler { _, e ->
         LL.e("xdd $e")
         e.printStackTrace()
         if (e.message?.contains("Unauthorized") == true) {

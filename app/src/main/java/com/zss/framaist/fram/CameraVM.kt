@@ -24,8 +24,7 @@ import com.zss.common.net.toRequestBody
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
-import com.zss.framaist.fram.ui.MODE_CAMERA
-import com.zss.framaist.fram.ui.MODE_LOADING
+import com.zss.framaist.bean.UiMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +55,7 @@ class CameraVM : BaseVM<CameraRepo>() {
     private val _submitPic: MutableStateFlow<SuggestionResp?> = MutableStateFlow(null)
     val submitPic = _submitPic.asStateFlow()
 
-    private val _uiMode: MutableStateFlow<Int> = MutableStateFlow(MODE_CAMERA)
+    private val _uiMode: MutableStateFlow<UiMode> = MutableStateFlow(UiMode.CAMERA)
     val uiMode = _uiMode.asStateFlow()
 
     private val _aspectRatio: MutableStateFlow<Int> = MutableStateFlow(AspectRatio.RATIO_16_9)
@@ -95,7 +94,7 @@ class CameraVM : BaseVM<CameraRepo>() {
         _picDepth.value = null
     }
 
-    fun setUiMode(mode: Int) {
+    fun setUiMode(mode: UiMode) {
         LL.e("xdd 设置UI模式$mode")
         _uiMode.value = mode
     }
@@ -197,18 +196,24 @@ class CameraVM : BaseVM<CameraRepo>() {
             })
         }
 
+    fun cancelAnalyze() {
+        job?.cancel()
+    }
 
-    fun analyzeImage(bitmap: Bitmap) = launch({
-        DepthHelper.isPredicting = true
-        val result = depthManager.predictFromBitmapAsync(bitmap)
-        LL.e("xdd 分析景深 ${result?.isTooClose}")
-        DepthHelper.isPredicting = false
-        result?.bitmap = bitmap
-        _picDepth.value = result
-    }, {
-        DepthHelper.isPredicting = false
-        LL.e("xdd $it")
-    })
+    fun analyzeImage(bitmap: Bitmap) {
+        job?.cancel()
+        job = launch({
+            DepthHelper.isPredicting = true
+            val result = depthManager.predictFromBitmapAsync(bitmap)
+            LL.e("xdd 分析景深 ${result?.isTooClose}")
+            DepthHelper.isPredicting = false
+            result?.bitmap = bitmap
+            _picDepth.value = result
+        }, {
+            DepthHelper.isPredicting = false
+            LL.e("xdd $it")
+        })
+    }
 
     fun submitPicture() {
         launch({
@@ -219,13 +224,18 @@ class CameraVM : BaseVM<CameraRepo>() {
                 ToastUtils.showShort("距离过近!")
                 return@launch
             }
-            setUiMode(MODE_LOADING)
+            setUiMode(UiMode.LOADING)
             val res = analyze(bitmap)
             _submitPic.value = res
-            setUiMode(MODE_CAMERA)
+            //接口返回失败时允许再次提交
+            if (res?.status == "failed") {
+                setUiMode(UiMode.PICTURE)
+            } else {
+                setUiMode(UiMode.CAMERA)
+            }
         }, {
             ToastUtils.showShort(it)
-            setUiMode(MODE_CAMERA)
+            setUiMode(UiMode.PICTURE)
         })
     }
 }

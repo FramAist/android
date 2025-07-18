@@ -42,7 +42,7 @@
 -verbose
 
 # 使用printmapping指定映射文件的名称
--printmapping mapping.txt
+# -printmapping mapping.txt
 
 # 屏蔽警告
 -ignorewarnings
