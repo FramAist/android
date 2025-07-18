@@ -53,7 +53,8 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
             // 加载全部fragment（不全部加载可能会导致首次进入app点击我的页面卡顿）
             //offscreenPageLimitSafe(adapterVp!!.itemCount - 1)
         }
-        binding?.vpContent?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding?.vpContent?.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
             }
@@ -90,7 +91,7 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
                             tvDiscover.isSelected = true
                             tvFactory.isSelected = false
                             tvMine.isSelected = false
-                            //TODO 本期不开放发现
+                            // 本期不开放发现
                             showNotSupportedDialog(this@EntranceMainActivity)
                             vTabHome.setCurrentItem(index)
 
@@ -113,7 +114,7 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
                             tvDiscover.isSelected = false
                             tvFactory.isSelected = true
                             tvMine.isSelected = false
-                            //TODO 本期不开放工坊
+                            // 本期不开放工坊
                             showNotSupportedDialog(this@EntranceMainActivity)
                             vTabHome.setCurrentItem(index)
                         }

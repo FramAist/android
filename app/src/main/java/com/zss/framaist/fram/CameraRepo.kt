@@ -1,6 +1,7 @@
 package com.zss.framaist.fram
 
 import android.graphics.Bitmap
+import com.blankj.utilcode.util.TimeUtils
 import com.zss.base.mvvm.BaseRepository
 import com.zss.common.net.getOrNull
 import com.zss.framaist.bean.AnalyzeResp
@@ -25,7 +26,7 @@ class CameraRepo : BaseRepository() {
                 byteArray.toRequestBody(("image/jpeg").toMediaTypeOrNull())
             )
             .addFormDataPart("scene_type", "full")
-            .addFormDataPart("created_at", "2025-07-14 10:00:00")
+            .addFormDataPart("created_at", TimeUtils.getNowString())
             .addFormDataPart("aspect_ratio", "16:9")
             .build()
         return api.compositionAnalyze(rb).getOrNull()
