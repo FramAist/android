@@ -12,6 +12,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.example.depthestimation.DepthAnalysisResult
 import com.example.depthestimation.DepthHelper
@@ -113,18 +114,24 @@ class CameraVM : BaseVM<CameraRepo>() {
     suspend fun analyze(data: Bitmap): SuggestionResp? =
         suspendCancellableCoroutine<SuggestionResp?> { con ->
             launch({
-                val res = repo.analyzeRemote(data)
+                val radio = when (aspectRatio.value) {
+                    AspectRatio.RATIO_16_9 -> "16:9"
+                    AspectRatio.RATIO_4_3 -> "4:3"
+                    else -> "${ScreenUtils.getScreenHeight()}:${ScreenUtils.getScreenWidth()}"
+                }
+                val res = repo.analyzeRemote(data, radio)
                 LL.e("xdd $res")
                 requireNotNull(res) { "解析构图失败!" }
                 var suggestionRes: SuggestionResp? = null
                 var repeatTime = 1
                 var status = ""
                 while (repeatTime < 40) {
+                    delay(1000)
                     suggestionRes = repo.getSuggestion(res.task_id)
                     LL.e("xdd $suggestionRes")
                     status = suggestionRes?.status.toString()
                     suggestionRes?.taskId = res.task_id
-                    if (status != "pending") {
+                    if (status != "pending" && status != "processing") {
                         con.resume(suggestionRes)
                         return@launch
                     }

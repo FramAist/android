@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream
 
 class CameraRepo : BaseRepository() {
     val api = GlobalApiManager.composeApiService
-    suspend fun analyzeRemote(data: Bitmap): AnalyzeResp? {
+    suspend fun analyzeRemote(data: Bitmap,ratio: String): AnalyzeResp? {
         val stream = ByteArrayOutputStream()
         data.compress(Bitmap.CompressFormat.JPEG, 30, stream)
         val byteArray = stream.toByteArray()
