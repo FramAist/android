@@ -1,3 +1,7 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import java.text.SimpleDateFormat
+import java.util.Date
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -54,11 +58,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         //compose = true
@@ -76,6 +80,14 @@ android {
     lint {
         abortOnError = false
         checkGeneratedSources = true
+    }
+
+    applicationVariants.all {
+        outputs.forEach {
+            val timeNow = SimpleDateFormat("yyyyMMdd").format(Date())
+            val newName = "framasit_${buildType.name}_${versionCode}_${timeNow}.apk"
+            (it as BaseVariantOutputImpl).outputFileName = newName
+        }
     }
 
 }
