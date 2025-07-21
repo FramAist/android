@@ -2,6 +2,7 @@ package com.zss.framaist.mine
 
 import com.zss.base.mvvm.BaseVM
 import com.zss.base.mvvm.launch
+import com.zss.base.util.LL
 import com.zss.common.net.getOrNull
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.net.GlobalApiManager
@@ -22,7 +23,11 @@ class MineVM : BaseVM<MineRepo>() {
 
     fun getRecentCompose() {
         launch({
-            _recentList.value = api.getSuggestionList(20).getOrNull() ?: listOf()
+            val res = api.getSuggestionList(20).getOrNull()?.results ?: listOf()
+            LL.e("xdd $res")
+            _recentList.value = res
+        },{
+            LL.e("xdd $it")
         })
     }
 

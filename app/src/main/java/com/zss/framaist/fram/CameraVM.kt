@@ -22,6 +22,7 @@ import com.zss.base.mvvm.launch
 import com.zss.base.util.LL
 import com.zss.common.net.getOrNull
 import com.zss.common.net.toRequestBody
+import com.zss.common.util.MMKVUtil
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
@@ -197,8 +198,10 @@ class CameraVM : BaseVM<CameraRepo>() {
             }
             launch({
                 val res = repo.api.compositionConfirm(jb.toRequestBody()).getOrNull()
-                con.resume(res)
+                LL.e("xdd $res $taskId $suggestionId ${MMKVUtil.getToken()}")
+                con.resume(res.toString())
             }, {
+                LL.e("xdd $it")
                 con.resumeWithException(java.lang.IllegalArgumentException(it))
             })
         }

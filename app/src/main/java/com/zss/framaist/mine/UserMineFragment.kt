@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zss.base.ui.BaseFragment
+import com.zss.base.util.LL
 import com.zss.base.util.collectResumed
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.util.MMKVUtil
@@ -63,6 +64,7 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
     override fun observe() {
         _binding?.apply {
             vm.recentList.collectResumed(viewLifecycleOwner) {
+                LL.e("xdd $it")
                 mAdapter.submitList(it.map { it.image_url })
             }
         }

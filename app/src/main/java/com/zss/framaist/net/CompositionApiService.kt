@@ -2,6 +2,7 @@ package com.zss.framaist.net
 
 import com.zss.common.net.ApiResponse
 import com.zss.framaist.bean.AnalyzeResp
+import com.zss.framaist.bean.RecentSuggestionsResp
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
 import okhttp3.RequestBody
@@ -32,12 +33,12 @@ interface CompositionApiService {
      * 确认构图建议
      */
     @POST("v1/composition/suggestions/confirm")
-    suspend fun compositionConfirm(@Body body: RequestBody): ApiResponse<String?>
+    suspend fun compositionConfirm(@Body body: RequestBody): ApiResponse<Any?>
 
     /**
      * 获取构图建议列表
      */
     @GET("/v1/composition/results")
-    suspend fun getSuggestionList(@Query("number") number: Int): ApiResponse<List<RecommendModel>?>
+    suspend fun getSuggestionList(@Query("number") number: Int): ApiResponse<RecentSuggestionsResp?>
 
 }

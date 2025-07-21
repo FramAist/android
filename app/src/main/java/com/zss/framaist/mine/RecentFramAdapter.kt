@@ -6,7 +6,6 @@ import com.chad.library.adapter4.BaseQuickAdapter
 import com.zss.base.glide.ImageLoader.loadImage
 import com.zss.base.mvvm.ViewBindingHolder
 import com.zss.base.mvvm.createViewBindingHolder
-import com.zss.framaist.R
 import com.zss.framaist.databinding.ItemMineRecentFramBinding
 
 class RecentFramAdapter : BaseQuickAdapter<String, ViewBindingHolder<ItemMineRecentFramBinding>>() {
@@ -16,7 +15,7 @@ class RecentFramAdapter : BaseQuickAdapter<String, ViewBindingHolder<ItemMineRec
         item: String?
     ) {
         holder.viewBinding?.apply {
-            ivImage.loadImage(context, R.drawable.ic_bg, 12)
+            ivImage.loadImage(context, item.toString())
         }
     }
 
