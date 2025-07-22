@@ -116,12 +116,12 @@ class CameraVM : BaseVM<CameraRepo>() {
         suspendCancellableCoroutine<SuggestionResp?> { con ->
             launch({
                 val radio = when (aspectRatio.value) {
-                    AspectRatio.RATIO_16_9 -> "16:9"
-                    AspectRatio.RATIO_4_3 -> "4:3"
-                    else -> "${ScreenUtils.getScreenHeight()}:${ScreenUtils.getScreenWidth()}"
+                    AspectRatio.RATIO_16_9 -> "9:16"
+                    AspectRatio.RATIO_4_3 -> "3:4"
+                    else -> "${ScreenUtils.getScreenWidth()}:${ScreenUtils.getScreenHeight()}"
                 }
                 val res = repo.analyzeRemote(data, radio)
-                LL.e("xdd $res")
+                LL.e("xdd $res $radio")
                 requireNotNull(res) { "解析构图失败!" }
                 var suggestionRes: SuggestionResp? = null
                 var repeatTime = 1
