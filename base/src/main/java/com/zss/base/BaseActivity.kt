@@ -27,7 +27,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     var loadingJob: Job? = null
 
     @SuppressLint("SourceLockedOrientationActivity")
-    open override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initBinding()
         //overridePendingTransition(R.anim.slide_in, R.anim.slide_out)

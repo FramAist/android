@@ -27,7 +27,7 @@ class CameraRepo : BaseRepository() {
             )
             .addFormDataPart("scene_type", "full")
             .addFormDataPart("created_at", TimeUtils.getNowString())
-            .addFormDataPart("aspect_ratio", "16:9")
+            .addFormDataPart("aspect_ratio", ratio)
             .build()
         return api.compositionAnalyze(rb).getOrNull()
     }

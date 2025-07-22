@@ -74,10 +74,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-const val MODE_CAMERA = 0
-const val MODE_PICTURE = 1
-const val MODE_LOADING = 2
-
 class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
     val vm: CameraVM by viewModels()
