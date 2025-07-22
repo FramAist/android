@@ -45,6 +45,7 @@
             android:launchMode="singleTop" />
         <activity android:name="com.zss.framaist.home.RecommendDetailActivity" />
         <activity android:name="com.zss.framaist.fram.ui.PictureSavedActivity" />
+        <activity android:name="com.zss.framaist.compose.MainActivity" />
     </application>
 
 </manifest>
