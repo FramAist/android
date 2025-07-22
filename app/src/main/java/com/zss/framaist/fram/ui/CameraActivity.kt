@@ -90,6 +90,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         }
     }
 
+    var viewPort: ViewPort? = null
+
     val imageAnalysis: ImageAnalysis by lazy {
         ImageAnalysis.Builder()
             .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
@@ -282,12 +284,16 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
     @OptIn(ExperimentalGetImage::class)
     private fun takePhoto() {
-        if (isTakingPhoto) return
+        if (isTakingPhoto) {
+            LL.e("xdd isTakingPhoto return")
+            return
+        }
         isTakingPhoto = true
         vm.clearPicture()
         vm.cancelAnalyze()
         binding?.layoutCamera?.apply {
             viewFinder.post {
+                LL.e("xdd post ")
                 imageCapture = when (vm.aspectRatio.value) {
                     AspectRatio.RATIO_DEFAULT ->
                         getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
@@ -297,7 +303,13 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     else -> getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                 }
                 try {
-                    cameraProviderFuture.get().unbind(preview, imageAnalysis)
+                    cameraProviderFuture.get().unbind(imageAnalysis)
+//                    val useCaseGroup =  //默认最多支持3个UseCase,take photo时再手动解绑
+//                     UseCaseGroup.Builder()
+//                        .addUseCase(preview)
+//                        .addUseCase(imageCapture!!)
+//                        .setViewPort(viewPort!!)
+//                        .build()
                     camera = cameraProviderFuture.get().bindToLifecycle(
                         this@CameraActivity,
                         CameraSelector.DEFAULT_BACK_CAMERA,
@@ -309,8 +321,13 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                         LightMode.CLOSE -> ImageCapture.FLASH_MODE_OFF
                         LightMode.AUTO -> ImageCapture.FLASH_MODE_AUTO
                     }
-                    safeLaunch {
+                    safeLaunch(onError = {
+                        vm.setUiMode(UiMode.CAMERA)
+                        isTakingPhoto = false
+                        LL.e("xdd $it")
+                    }) {
                         //TODO  有延迟,等待相机初始化,  待优化
+                        LL.e("xdd ")
                         delay(100)
                         val before = System.currentTimeMillis()
                         val res = imageCapture?.takePicture()
@@ -325,6 +342,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                         res.close() // 必须手动释放资源！
                     }
                 } catch (e: Exception) {
+                    isTakingPhoto = false
                     LL.e("xdd $e")
                 }
             }
@@ -568,14 +586,13 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         binding?.layoutCamera?.apply {
             viewFinder.post {
                 val rational = Rational(viewFinder.width, viewFinder.height)
-                val viewPort =
-                    ViewPort.Builder(rational, viewFinder.display.rotation).build()
+                viewPort = ViewPort.Builder(rational, viewFinder.display.rotation).build()
                 try {
                     //默认最多支持3个UseCase,take photo时再手动解绑
                     val useCaseGroup = UseCaseGroup.Builder()
                         .addUseCase(preview)
                         .addUseCase(imageAnalysis)
-                        .setViewPort(viewPort)
+                        .setViewPort(viewPort!!)
                         .build()
                     imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
                         //检测景深,画面等,目前仅支持景深

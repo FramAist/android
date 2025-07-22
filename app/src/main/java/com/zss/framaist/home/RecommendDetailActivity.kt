@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.zss.base.BaseActivity
 import com.zss.base.glide.ImageLoader.loadImage
 import com.zss.base.util.setOnSingleClickedListener
@@ -40,8 +41,9 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
         binding?.apply {
             tvTitle.text = recommendModel?.title
             tvDesc.text = recommendModel?.desc
-            ivPic.loadImage(this@RecommendDetailActivity, recommendModel?.image_url.toString())
+            //ivPic.loadImage(this@RecommendDetailActivity, recommendModel?.image_url.toString())
             tvGoToCamera.isGone = enterSource == SOURCE_CAMERA
+            Glide.with(this@RecommendDetailActivity).load(recommendModel?.image_url.toString()).into(ivPic)
         }
     }
 
