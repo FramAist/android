@@ -32,3 +32,4 @@ gradlew.bat
 /app/autoBackup/
 /app/RFix/
 /app/release/
+.kotlin
