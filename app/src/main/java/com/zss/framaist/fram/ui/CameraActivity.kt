@@ -11,6 +11,8 @@ import android.provider.Settings
 import android.util.Rational
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
@@ -23,12 +25,13 @@ import androidx.camera.core.ExposureState
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.UseCase
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.core.ViewPort
 import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
-import androidx.camera.core.takePicture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -49,7 +52,6 @@ import com.zss.base.util.dp2px
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.base.util.toast
 import com.zss.common.constant.IntentKey
-import com.zss.common.net.safeLaunch
 import com.zss.common.util.PermissionUtil
 import com.zss.framaist.R
 import com.zss.framaist.bean.LightMode
@@ -104,6 +106,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     val cameraProviderFuture by lazy {
         ProcessCameraProvider.getInstance(this)
     }
+
+    var commonUseCaseGroup: UseCaseGroup? = null
 
     //是否正在拍照
     private var isTakingPhoto = false
@@ -164,6 +168,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 }
             }
         }
+        initDefaultUseCaseGroup()
     }
 
     override fun initData() {
@@ -199,16 +204,22 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 val height = when (it) {
                     AspectRatio.RATIO_16_9 -> {
                         layoutCamera.tvRatio.text = "16:9"
+                        imageCapture =
+                            getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                         (width * 16 / 9.0).toInt()
                     }
 
                     AspectRatio.RATIO_4_3 -> {
                         layoutCamera.tvRatio.text = "4:3"
+                        imageCapture =
+                            getImageCapture(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
                         (width * 4 / 3.0).toInt()
                     }
 
                     else -> {
                         layoutCamera.tvRatio.text = "全屏"
+                        imageCapture =
+                            getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
                         XPopupUtils.getScreenHeight(this@CameraActivity)
                     }
                 }
@@ -216,6 +227,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 lp.width = width
                 lp.height = height
                 layoutCamera.viewFinder.layoutParams = lp
+                initDefaultUseCaseGroup()
                 bindAnalyze()
             }
         }
@@ -264,9 +276,20 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         vm.lightMode.collectResumed(this) {
             val ivLight = binding?.layoutCamera?.ivLight ?: return@collectResumed
             when (it) {
-                LightMode.CLOSE -> ivLight.setImageResource(R.drawable.ic_close_flash)
-                LightMode.AUTO -> ivLight.setImageResource(R.drawable.ic_auto_flash)
-                LightMode.OPEN -> ivLight.setImageResource(R.drawable.ic_open_flash)
+                LightMode.CLOSE -> {
+                    ivLight.setImageResource(R.drawable.ic_close_flash)
+                    imageCapture?.flashMode = ImageCapture.FLASH_MODE_OFF
+                }
+
+                LightMode.AUTO -> {
+                    ivLight.setImageResource(R.drawable.ic_auto_flash)
+                    imageCapture?.flashMode = ImageCapture.FLASH_MODE_AUTO
+                }
+
+                LightMode.OPEN -> {
+                    ivLight.setImageResource(R.drawable.ic_open_flash)
+                    imageCapture?.flashMode = ImageCapture.FLASH_MODE_ON
+                }
             }
         }
     }
@@ -291,61 +314,37 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         isTakingPhoto = true
         vm.clearPicture()
         vm.cancelAnalyze()
-        binding?.layoutCamera?.apply {
-            viewFinder.post {
-                LL.e("xdd post ")
-                imageCapture = when (vm.aspectRatio.value) {
-                    AspectRatio.RATIO_DEFAULT ->
-                        getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
-
-                    AspectRatio.RATIO_16_9 -> getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
-                    AspectRatio.RATIO_4_3 -> getImageCapture(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
-                    else -> getImageCapture(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
-                }
-                try {
-                    cameraProviderFuture.get().unbind(imageAnalysis)
-//                    val useCaseGroup =  //默认最多支持3个UseCase,take photo时再手动解绑
-//                     UseCaseGroup.Builder()
-//                        .addUseCase(preview)
-//                        .addUseCase(imageCapture!!)
-//                        .setViewPort(viewPort!!)
-//                        .build()
-                    camera = cameraProviderFuture.get().bindToLifecycle(
-                        this@CameraActivity,
-                        CameraSelector.DEFAULT_BACK_CAMERA,
-                        imageCapture
-                    )
-                    //设置闪光灯会让拍照时间  从800ms到1000ms
-                    imageCapture?.flashMode = when (vm.lightMode.value) {
-                        LightMode.OPEN -> ImageCapture.FLASH_MODE_ON
-                        LightMode.CLOSE -> ImageCapture.FLASH_MODE_OFF
-                        LightMode.AUTO -> ImageCapture.FLASH_MODE_AUTO
+        LL.e("xdd 开始拍照  停止分析景深")
+        try {
+            cameraProviderFuture.get().unbind(imageAnalysis)
+            bindUseCase(imageCapture!!)
+            playShutterEffect()
+            val before = System.currentTimeMillis()
+            imageCapture?.takePicture(
+                Executors.newSingleThreadExecutor(),
+                object : ImageCapture.OnImageCapturedCallback() {
+                    override fun onCaptureStarted() {
+                        super.onCaptureStarted()
+                        LL.e("xdd onCaptureStarted ${System.currentTimeMillis() - before}")
                     }
-                    safeLaunch(onError = {
-                        vm.setUiMode(UiMode.CAMERA)
-                        isTakingPhoto = false
-                        LL.e("xdd $it")
-                    }) {
-                        //TODO  有延迟,等待相机初始化,  待优化
-                        LL.e("xdd ")
-                        delay(100)
-                        val before = System.currentTimeMillis()
-                        val res = imageCapture?.takePicture()
+
+                    override fun onCaptureSuccess(image: ImageProxy) {
+                        super.onCaptureSuccess(image)
                         val end = System.currentTimeMillis()
                         LL.e("xdd 总拍摄时间: ${end - before}")
-                        val rotationDegrees = res?.imageInfo?.rotationDegrees ?: return@safeLaunch
-                        val bitmap = res.toBitmap() ?: return@safeLaunch
+                        val rotationDegrees = image.imageInfo.rotationDegrees
+                        val bitmap = image.toBitmap()
                         val correctedBitmap = rotateBitmap(bitmap, rotationDegrees) // 旋转修正
                         vm.setUiMode(UiMode.PICTURE)
                         vm.setPicture(correctedBitmap)
                         vm.analyzeImage(correctedBitmap)
-                        res.close() // 必须手动释放资源！
+                        image.close() // 必须手动释放资源！
                     }
-                } catch (e: Exception) {
-                    isTakingPhoto = false
-                    LL.e("xdd $e")
-                }
-            }
+                })
+        } catch (e: Exception) {
+            isTakingPhoto = false
+            vm.setUiMode(UiMode.CAMERA)
+            LL.e("xdd $e")
         }
     }
 
@@ -439,6 +438,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         var lastX = 0f
         var lastY = 0f
         binding?.layoutCamera?.viewFinder?.setOnTouchListener { _, event ->
+            LL.e("xdd ${event.action}")
             binding?.layoutCamera?.viewFinder?.performClick()
             scaleDetector.onTouchEvent(event)
             when (event.action) {
@@ -582,38 +582,58 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
      * 绑定imageAnalysis
      */
     fun bindAnalyze() {
-        // 设置 ViewPort
+        imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
+            //检测景深,画面等,目前仅支持景深
+            if (DepthHelper.isInitialized && !DepthHelper.isPredicting) {
+                vm.analyzeImage(imageProxy.toBitmap())
+            }
+            imageProxy.close()
+        }
+        cameraProviderFuture.get().unbind(imageCapture)
+        bindUseCase(imageAnalysis)
+    }
+
+    /**
+     *  preview,cameraSelector,analyze,imageCapture
+     */
+    fun bindUseCase(useCase: UseCase) {
+        cameraProviderFuture.get().bindToLifecycle(
+            this@CameraActivity, CameraSelector.DEFAULT_BACK_CAMERA, useCase
+        )
+    }
+
+    fun initDefaultUseCaseGroup() {
         binding?.layoutCamera?.apply {
-            viewFinder.post {
+            root.post {
                 val rational = Rational(viewFinder.width, viewFinder.height)
                 viewPort = ViewPort.Builder(rational, viewFinder.display.rotation).build()
-                try {
-                    //默认最多支持3个UseCase,take photo时再手动解绑
-                    val useCaseGroup = UseCaseGroup.Builder()
+                commonUseCaseGroup =
+                    UseCaseGroup.Builder()
                         .addUseCase(preview)
-                        .addUseCase(imageAnalysis)
                         .setViewPort(viewPort!!)
                         .build()
-                    imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
-                        //检测景深,画面等,目前仅支持景深
-                        if (DepthHelper.isInitialized && !DepthHelper.isPredicting) {
-                            vm.analyzeImage(imageProxy.toBitmap())
-                        }
-                        imageProxy.close()
-                    }
-                    cameraProviderFuture.get().unbindAll()
-                    camera = cameraProviderFuture.get().bindToLifecycle(
-                        this@CameraActivity,
-                        CameraSelector.DEFAULT_BACK_CAMERA,
-                        useCaseGroup
-                    )
-                } catch (e: Exception) {
-                    LL.e("xdd $e")
-                }
+                camera = cameraProviderFuture.get().bindToLifecycle(
+                    this@CameraActivity, CameraSelector.DEFAULT_BACK_CAMERA, commonUseCaseGroup!!
+                )
             }
         }
+    }
 
+    private fun playShutterEffect() {
+        val anim = ScaleAnimation(
+            1f, 0.9f, 1f, 0.9f,
+            Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.5f
+        ).apply {
+            duration = 100
+            repeatCount = 1
+            repeatMode = Animation.REVERSE
+        }
+        binding?.layoutCamera?.btnTakePhoto?.startAnimation(anim)
 
+        // 播放系统快门声
+//        val soundPool = SoundPool.Builder().build()
+//        soundPool.load(this, android.provider.Settings.System.DEFAULT_CAMERA_SOUND_URI, 1)
     }
 
 }

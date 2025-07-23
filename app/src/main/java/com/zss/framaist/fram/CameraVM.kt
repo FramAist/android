@@ -1,17 +1,7 @@
 package com.zss.framaist.fram
 
-import android.content.ContentValues
-import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
-import android.provider.MediaStore
-import androidx.annotation.OptIn
 import androidx.camera.core.AspectRatio
-import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
-import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.example.depthestimation.DepthAnalysisResult
@@ -146,49 +136,6 @@ class CameraVM : BaseVM<CameraRepo>() {
                 con.resumeWithException(IllegalArgumentException(it))
             })
         }
-
-
-    suspend fun startPicture(imageCapture: ImageCapture, context: Context) =
-        suspendCancellableCoroutine<Bitmap> { con ->
-            var isResumed = false
-            imageCapture.takePicture(
-                ContextCompat.getMainExecutor(context),
-                object : ImageCapture.OnImageCapturedCallback() {
-                    @OptIn(ExperimentalGetImage::class)
-                    override fun onCaptureSuccess(image: ImageProxy) {
-                        super.onCaptureSuccess(image)
-                        LL.e("xdd ${image.image}  ${image.width} ${image.height} ${image.imageInfo} ")
-                        if (!isResumed) {
-                            val res = image.toBitmap()
-                            con.resume(res)
-                            isResumed = true
-                        }
-                    }
-
-                    override fun onError(exception: ImageCaptureException) {
-                        super.onError(exception)
-                        if (!isResumed) {
-                            con.resumeWithException(exception)
-                        }
-                    }
-                })
-        }
-
-
-    fun getOutputOptions(context: Context) {
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, System.currentTimeMillis().toString())
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/FramAist")
-            }
-        }
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(
-            context.contentResolver,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues
-        ).build()
-    }
 
     suspend fun confirmSuggestion(taskId: String?, suggestionId: String) =
         suspendCancellableCoroutine<String?> { con ->
