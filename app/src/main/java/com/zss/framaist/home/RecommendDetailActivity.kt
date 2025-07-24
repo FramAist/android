@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.zss.base.BaseActivity
+import com.zss.base.glide.ImageLoader.load
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.constant.EventConstant
 import com.zss.common.constant.IntentKey
@@ -42,10 +43,8 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
         binding?.apply {
             tvTitle.text = recommendModel?.title
             tvDesc.text = recommendModel?.desc
-            //ivPic.loadImage(this@RecommendDetailActivity, recommendModel?.image_url.toString())
             tvGoToCamera.isGone = enterSource == SOURCE_CAMERA
-            Glide.with(this@RecommendDetailActivity).load(recommendModel?.image_url.toString())
-                .into(ivPic)
+            ivPic.load(this@RecommendDetailActivity,recommendModel?.image_url)
         }
     }
 

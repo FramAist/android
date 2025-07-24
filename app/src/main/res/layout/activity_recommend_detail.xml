@@ -5,18 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+
+    <ImageView
+        android:id="@+id/ivPic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/ivPic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scaleType="centerInside" />
-    </FrameLayout>
-
+        android:layout_height="match_parent"
+        />
 
     <com.hjq.shape.view.ShapeImageView
         android:id="@+id/ivBack"
