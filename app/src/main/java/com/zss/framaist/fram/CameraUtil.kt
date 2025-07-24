@@ -12,6 +12,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+/**
+ * CameraActivity页面的相机工具类
+ */
 
 suspend fun ImageCapture.startPicture(context: Context) = suspendCancellableCoroutine { con ->
     var isResumed = false

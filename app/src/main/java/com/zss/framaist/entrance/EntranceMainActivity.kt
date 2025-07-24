@@ -12,6 +12,7 @@ import com.zss.framaist.discover.DiscoverFragment
 import com.zss.framaist.factory.FactoryFragment
 import com.zss.framaist.fram.ui.CameraActivity
 import com.zss.framaist.fram.ui.FramFragment
+import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.home.HomeFragment
 import com.zss.framaist.mine.UserMineFragment
 import kotlinx.coroutines.Dispatchers
@@ -99,9 +100,7 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
 
                         2 -> {
                             vTabHome.setCurrentItem(index)
-                            startActivity(
-                                Intent(this@EntranceMainActivity, CameraActivity::class.java)
-                            )
+                            navTo<CameraActivity>()
                         }
 
                         3 -> {

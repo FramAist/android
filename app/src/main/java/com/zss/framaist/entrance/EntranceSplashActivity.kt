@@ -1,10 +1,10 @@
 package com.zss.framaist.entrance
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import com.zss.base.BaseActivity
 import com.zss.common.util.MMKVUtil
 import com.zss.framaist.databinding.ActivitySplashBinding
+import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
 
 @SuppressLint("CustomSplashScreen")
@@ -22,12 +22,12 @@ class EntranceSplashActivity : BaseActivity<ActivitySplashBinding>() {
     }
 
     fun jumpToMain() {
-        startActivity(Intent(this, EntranceMainActivity::class.java))
+        navTo<EntranceMainActivity>()
         finish()
     }
 
     fun jumpToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
+        navTo<LoginActivity>()
         finish()
     }
 }

@@ -1,9 +1,7 @@
 package com.zss.framaist.bean
 
 import android.os.Parcelable
-import com.blankj.utilcode.util.LogUtils.a
 import kotlinx.parcelize.Parcelize
-import kotlin.math.abs
 
 @Parcelize
 data class RecommendModel(
@@ -14,7 +12,8 @@ data class RecommendModel(
     val score: Double,
     val rank: Int,
     val model_version: String,
-
+    val width: Int?,
+    val height: Int?,
     val title: String?,
     val desc: String?,
 ) : Parcelable
