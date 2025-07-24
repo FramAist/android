@@ -79,11 +79,12 @@
 
     <com.hjq.shape.view.ShapeImageView
         android:id="@+id/ivRecommendPic"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="160dp"
         android:layout_marginStart="30dp"
         android:background="@drawable/bg_tab_recommend_list"
         android:padding="1dp"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@id/btnTakePhoto"
         app:layout_constraintStart_toStartOf="parent"
         app:shape_radius="8dp" />

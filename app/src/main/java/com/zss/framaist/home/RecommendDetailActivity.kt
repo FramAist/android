@@ -1,18 +1,17 @@
 package com.zss.framaist.home
 
-import android.content.Intent
 import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.zss.base.BaseActivity
-import com.zss.base.glide.ImageLoader.loadImage
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.constant.IntentKey
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.common.showNotSupportedDialog
 import com.zss.framaist.databinding.ActivityRecommendDetailBinding
 import com.zss.framaist.fram.ui.CameraActivity
+import com.zss.framaist.fram.ui.navTo
 
 
 const val SOURCE_CAMERA = 1
@@ -43,7 +42,8 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
             tvDesc.text = recommendModel?.desc
             //ivPic.loadImage(this@RecommendDetailActivity, recommendModel?.image_url.toString())
             tvGoToCamera.isGone = enterSource == SOURCE_CAMERA
-            Glide.with(this@RecommendDetailActivity).load(recommendModel?.image_url.toString()).into(ivPic)
+            Glide.with(this@RecommendDetailActivity).load(recommendModel?.image_url.toString())
+                .into(ivPic)
         }
     }
 
@@ -61,13 +61,9 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
                 showNotSupportedDialog(this@RecommendDetailActivity)
             }
             tvGoToCamera.setOnSingleClickedListener {
-                startActivity(
-                    Intent(
-                        this@RecommendDetailActivity,
-                        CameraActivity::class.java
-                    ).apply {
-                        putExtra(IntentKey.DATA, recommendModel)
-                    })
+                navTo<CameraActivity> {
+                    it.putExtra(IntentKey.DATA, recommendModel)
+                }
             }
             ivPic.setOnClickListener {
                 wrapped = !wrapped

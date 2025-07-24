@@ -24,7 +24,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="78dp"
+        android:layout_marginTop="58dp"
         android:padding="5dp"
         android:src="@drawable/ic_arrow_left_white"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +52,7 @@
         android:layout_marginEnd="@dimen/dp26"
         android:padding="5dp"
         android:src="@drawable/ic_collect_white"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/ivBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivBack" />
@@ -95,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="26dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="12dp"
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="拍同款"
@@ -113,6 +114,6 @@
         android:id="@+id/widgetsGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivBack,ivCollect,llDesc" />
+        app:constraint_referenced_ids="ivBack,llDesc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

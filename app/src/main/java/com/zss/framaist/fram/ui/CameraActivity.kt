@@ -1,7 +1,7 @@
 package com.zss.framaist.fram.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.CountDownTimer
@@ -25,8 +25,9 @@ import com.example.depthestimation.DepthHelper
 import com.lxj.xpopup.core.CenterPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.zss.base.BaseActivity
-import com.zss.base.glide.ImageLoader.loadImage
+import com.zss.base.glide.ImageLoader.load
 import com.zss.base.util.LL
+import com.zss.base.util.clipOutline
 import com.zss.base.util.collectResumed
 import com.zss.base.util.dp2px
 import com.zss.base.util.setOnSingleClickedListener
@@ -98,14 +99,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 cameraControl?.initDefaultUseCaseGroup(viewFinder)
                 ivRecommendPic.isVisible = recommendData != null
                 if (recommendData != null) {
-                    val lp = ivRecommendPic.layoutParams
-                    lp.width = 100.dp2px()
-                    lp.height = 150.dp2px()
-                    ivRecommendPic.layoutParams = lp
-                    ivRecommendPic.loadImage(
-                        this@CameraActivity,
-                        recommendData.image_url.toString()
-                    )
+                    ivRecommendPic.load(this@CameraActivity, recommendData.image_url)
+                    ivRecommendPic.clipOutline(8)
                 }
             }
         }
@@ -467,6 +462,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
 }
 
-inline fun <reified T : Any> Activity.navTo(block: (intent: Intent) -> Unit = {}) {
+inline fun <reified T : Any> Context.navTo(block: (intent: Intent) -> Unit = {}) {
     startActivity(Intent(this@navTo, T::class.java).apply(block))
 }
