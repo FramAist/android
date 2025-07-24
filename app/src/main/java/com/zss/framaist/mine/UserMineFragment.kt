@@ -5,22 +5,20 @@ import android.view.LayoutInflater
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chad.library.adapter4.util.setOnDebouncedItemClick
 import com.zss.base.ui.BaseFragment
 import com.zss.base.util.LL
 import com.zss.base.util.collectResumed
 import com.zss.base.util.setOnSingleClickedListener
+import com.zss.common.constant.IntentKey
 import com.zss.common.util.MMKVUtil
 import com.zss.framaist.databinding.UserFragmentMineBinding
+import com.zss.framaist.fram.ui.navTo
+import com.zss.framaist.home.RecommendDetailActivity
+import com.zss.framaist.home.SOURCE_LIST
 import com.zss.framaist.login.LoginActivity
 
 
-/**
- * @description :我的
- * TODO:
- * 1. 最近构图列表缺少数据源和跳转
- * 2. logout暴力清空了所有
- * 3. 除了用户信息其他item都没做跳转
- */
 class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
 
     private val mAdapter = RecentFramAdapter()
@@ -41,10 +39,15 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
             rvHistory.layoutManager =
                 LinearLayoutManager(requireActivity(), RecyclerView.HORIZONTAL, false)
             rvHistory.adapter = mAdapter
-            mAdapter.submitList(listOf("", "", ""))
             val id = userInfo.user_id
             tvNickName.text = userInfo.nickName ?: "用户${id.substring(id.length - 6, id.length)}"
             tvDesc.text = "内测用户"
+            mAdapter.setOnDebouncedItemClick { adapter, _, p ->
+                requireActivity().navTo<RecommendDetailActivity> {
+                    it.putExtra(IntentKey.DATA, adapter.getItem(p))
+                    it.putExtra(IntentKey.SOURCE, SOURCE_LIST)
+                }
+            }
         }
     }
 
@@ -65,7 +68,7 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
         _binding?.apply {
             vm.recentList.collectResumed(viewLifecycleOwner) {
                 LL.e("xdd $it")
-                mAdapter.submitList(it.map { it.image_url })
+                mAdapter.submitList(it)
             }
         }
     }
