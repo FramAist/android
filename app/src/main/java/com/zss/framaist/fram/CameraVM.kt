@@ -183,9 +183,9 @@ class CameraVM : BaseVM<CameraRepo>() {
             requireNotNull(bitmap) { "获取图片失败!" }
             if (_picDepth.value?.isTooClose == true) {
                 ToastUtils.showShort("距离过近!")
+                setUiMode(UiMode.PICTURE)
                 return@launch
             }
-            setUiMode(UiMode.LOADING)
             val res = analyze(bitmap)
             _submitPic.value = res
             //接口返回失败时允许再次提交

@@ -71,6 +71,7 @@ dependencies {
     api(libs.third.shapeview)
     api(libs.third.shape.drawable)
     api(libs.third.glide)
+    api(libs.third.glide.transformations)
     api(libs.third.gson.factory)
     api(libs.third.convert.gson)
     api(libs.third.angcyo.dsltablayout.tablayout)

@@ -3,7 +3,10 @@ package com.zss.framaist.fram.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import android.net.Uri
+import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.MotionEvent
@@ -20,6 +23,7 @@ import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.depthestimation.DepthHelper
 import com.lxj.xpopup.core.CenterPopupView
 import com.lxj.xpopup.util.XPopupUtils
@@ -49,6 +53,7 @@ import com.zss.framaist.util.DialogHelper.showClockPopView
 import com.zss.framaist.util.DialogHelper.showRatioPopView
 import com.zss.framaist.util.DialogHelper.showSplashPopView
 import com.zss.framaist.util.DialogHelper.showTooCloseTips
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -165,7 +170,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             }
             isTakingPhoto = false
             showTooCloseTips(it.isTooClose)
-            dismissLoading()
             if (isPreSubmit) {
                 isPreSubmit = false
                 vm.submitPicture()
@@ -188,10 +192,34 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     UiMode.PICTURE -> {
                         layoutPicture.root.isVisible = true
                         layoutLoading.root.isGone = true
+                        if (DataHelper.tempPicture != null) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                layoutPicture.ivPreview.setRenderEffect(null)
+                            } else {
+                                Glide.with(this@CameraActivity)
+                                    .load(DataHelper.tempPicture)
+                                    .into(layoutPicture.ivPreview)
+                            }
+                        }
                     }
 
                     UiMode.LOADING -> {
                         layoutLoading.root.isVisible = true
+                        if (DataHelper.tempPicture != null) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                val blurEffect = RenderEffect.createBlurEffect(
+                                    20f, // 模糊半径X
+                                    20f, // 模糊半径Y
+                                    Shader.TileMode.CLAMP
+                                )
+                                layoutPicture.ivPreview.setRenderEffect(blurEffect)
+                            } else {
+                                Glide.with(this@CameraActivity)
+                                    .load(DataHelper.tempPicture)
+                                    .apply(RequestOptions.bitmapTransform(BlurTransformation(25)))
+                                    .into(layoutPicture.ivPreview)
+                            }
+                        }
                     }
                 }
             }
@@ -229,8 +257,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         vm.cancelAnalyze()
         LL.e("xdd 开始拍照  停止分析景深")
         try {
-
-
             playShutterEffect()
             cameraControl?.takePicture {
                 vm.setUiMode(UiMode.PICTURE)
@@ -383,9 +409,9 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     toast("距离过近!")
                     return@setOnSingleClickedListener
                 }
+                vm.setUiMode(UiMode.LOADING)
                 //生成了图片,但是没分析完景深
                 if (vm.tempPic.value != null && vm.picDepth.value == null) {
-                    showLoading()
                     isPreSubmit = true
                     return@setOnSingleClickedListener
                 }
