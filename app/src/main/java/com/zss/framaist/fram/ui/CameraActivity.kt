@@ -136,8 +136,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 return@collectResumed
             }
             navTo<RecommendListActivity> {
-                intent.putParcelableArrayListExtra(IntentKey.RECOMMEND_LIST, ArrayList(list))
-                intent.putExtra(IntentKey.TASK_ID, resp.taskId)
+                it.putParcelableArrayListExtra(IntentKey.RECOMMEND_LIST, ArrayList(list))
+                it.putExtra(IntentKey.TASK_ID, resp.taskId)
             }
         }
         vm.aspectRatio.collectResumed(this) {
@@ -468,7 +468,5 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 }
 
 inline fun <reified T : Any> Activity.navTo(block: (intent: Intent) -> Unit = {}) {
-    startActivity(Intent(this, T::class.java).apply {
-        block(intent)
-    })
+    startActivity(Intent(this@navTo, T::class.java).apply(block))
 }
