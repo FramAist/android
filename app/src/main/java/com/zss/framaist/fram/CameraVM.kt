@@ -26,6 +26,7 @@ import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+const val ANALYZE_INTERNAL = 40
 
 class CameraVM : BaseVM<CameraRepo>() {
 
@@ -87,7 +88,6 @@ class CameraVM : BaseVM<CameraRepo>() {
     }
 
     fun setUiMode(mode: UiMode) {
-        LL.e("xdd 设置UI模式$mode")
         _uiMode.value = mode
     }
 
@@ -116,7 +116,7 @@ class CameraVM : BaseVM<CameraRepo>() {
                 var suggestionRes: SuggestionResp? = null
                 var repeatTime = 1
                 var status = ""
-                while (repeatTime < 40) {
+                while (repeatTime < ANALYZE_INTERNAL) {
                     delay(1000)
                     suggestionRes = repo.getSuggestion(res.task_id)
                     LL.e("xdd $suggestionRes")
@@ -175,7 +175,6 @@ class CameraVM : BaseVM<CameraRepo>() {
     fun submitPicture() {
         launch({
             val bitmap = DataHelper.tempPicture
-            LL.e("xdd $bitmap")
             requireNotNull(bitmap) { "获取图片失败!" }
             if (_picDepth.value?.isTooClose == true) {
                 ToastUtils.showShort("距离过近!")

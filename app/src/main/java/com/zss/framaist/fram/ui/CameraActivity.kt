@@ -203,7 +203,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     }
 
                     UiMode.LOADING -> {
-                        layoutPicture.root.isGone = true
                         layoutLoading.root.isVisible = true
                     }
                 }
