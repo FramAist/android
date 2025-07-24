@@ -141,12 +141,12 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 cameraControl?.updateImageCapture(it)
                 val height = when (it) {
                     AspectRatio.RATIO_16_9 -> {
-                        layoutCamera.tvRatio.text = "16:9"
+                        layoutCamera.tvRatio.text = "9:16"
                         (width * 16 / 9.0).toInt()
                     }
 
                     AspectRatio.RATIO_4_3 -> {
-                        layoutCamera.tvRatio.text = "4:3"
+                        layoutCamera.tvRatio.text = "3:4"
                         (width * 4 / 3.0).toInt()
                     }
 
