@@ -87,6 +87,8 @@ class CameraControl(val activity: CameraActivity) {
      * 绑定imageAnalysis
      */
     fun bindAnalyze() {
+        //有推荐构图后不再检测景深
+        if (activity.vm.recommendData.value != null) return
         imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
             //检测景深,画面等,目前仅支持景深
             if (DepthHelper.isInitialized && !DepthHelper.isPredicting) {
