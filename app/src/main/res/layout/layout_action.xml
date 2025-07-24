@@ -89,17 +89,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:shape_radius="8dp" />
 
-    <ProgressBar
-        android:id="@+id/exposureProgress"
-        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekBar"
         android:layout_width="200dp"
-        android:layout_height="5dp"
-        android:layout_marginEnd="-80dp"
-        android:background="@color/gray_9da3ae"
+        android:layout_height="30dp"
+        android:layout_marginEnd="-60dp"
         android:max="100"
+        android:orientation="vertical"
+        android:paddingVertical="14dp"
         android:progress="50"
-        android:progressTint="@color/white"
+        android:progressDrawable="@drawable/exposure_seek_bar"
         android:rotation="270"
+        android:thumb="@drawable/ic_exposure"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -174,6 +177,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tv0,tv1,exposureProgress" />
+        app:constraint_referenced_ids="tv0,tv1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

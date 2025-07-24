@@ -9,17 +9,16 @@ import android.provider.Settings
 import android.view.MotionEvent
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ExposureState
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.depthestimation.DepthHelper
 import com.lxj.xpopup.core.CenterPopupView
@@ -33,6 +32,7 @@ import com.zss.base.util.dp2px
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.base.util.toast
 import com.zss.common.constant.IntentKey
+import com.zss.common.net.safeLaunch
 import com.zss.common.util.PermissionUtil
 import com.zss.framaist.R
 import com.zss.framaist.bean.LightMode
@@ -51,15 +51,12 @@ import com.zss.framaist.util.DialogHelper.showSplashPopView
 import com.zss.framaist.util.DialogHelper.showTooCloseTips
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
     val vm: CameraVM by viewModels()
     private var mCountDownTimer: CountDownTimer? = null
-    private var currentExposureIndex = 0
 
     //是否正在拍照
     private var isTakingPhoto = false
@@ -68,8 +65,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     private var isPreSubmit = false
 
     private var exposureJob: Job? = null
-
-    var enableExposure = true
 
     private val requestPermissionDialog: CenterPopupView by lazy {
         CameraDialogHelper.getGoToPermissionDialog(this, onConfirm = {
@@ -161,8 +156,6 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 layoutCamera.viewFinder.layoutParams = lp
                 cameraControl?.initDefaultUseCaseGroup(layoutCamera.viewFinder)
                 cameraControl?.bindAnalyze()
-//                initDefaultUseCaseGroup()
-//                bindAnalyze()
             }
         }
         vm.picDepth.collectResumed(this) {
@@ -299,55 +292,15 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         super.onDestroy()
     }
 
-    /**
-     * 设置曝光条进度
-     */
-    private fun setUpExposureProgress(current: Int, state: ExposureState) {
-        binding?.layoutCamera?.groupProgress?.isVisible = true
-        val range = state.exposureCompensationRange
-        val progress = ((current - range.lower).toFloat() / (range.upper - range.lower)) * 100
-        binding?.layoutCamera?.exposureProgress?.progress = progress.toInt()
-        exposureJob?.cancel()
-        exposureJob = lifecycleScope.launch {
-            delay(2000)
-            binding?.layoutCamera?.groupProgress?.isGone = true
-        }
-        exposureJob?.start()
-    }
-
     fun handleViewFinderOnTouch() {
-        var lastX = 0f
-        var lastY = 0f
         binding?.layoutCamera?.viewFinder?.setOnTouchListener { _, event ->
             binding?.layoutCamera?.viewFinder?.performClick()
             cameraControl?.scaleDetector?.onTouchEvent(event)
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    // 距离上次触摸点300内激活曝光调整
-                    enableExposure = !(abs(event.x - lastX) > 300 || abs(event.y - lastY) > 300)
-                    lastX = event.x
-                    lastY = event.y
                     cameraControl?.doFocus(event.x, event.y)
                     showFocusAnimation(event.x, event.y)
-                    true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    if (!enableExposure) return@setOnTouchListener false
-                    val dx = event.x - lastX
-                    val dy = event.y - lastY
-                    //拦截距离上次对焦位置100内的触摸事件
-                    if (abs(dx) + abs(dy) > 5 && abs(dx) < abs(dy)) {
-                        if (dy > 3) currentExposureIndex -= 1
-                        if (dy < 3) currentExposureIndex += 1
-                        //todo
-                        val camera = cameraControl?.camera ?: return@setOnTouchListener false
-                        val cameraInfo = camera.cameraInfo
-                        camera.cameraControl.setExposureCompensationIndex(currentExposureIndex)
-                        setUpExposureProgress(currentExposureIndex, cameraInfo.exposureState)
-                    }
-                    lastX = event.x
-                    lastY = event.y
+                    showExposureSeekbar()
                     true
                 }
 
@@ -390,6 +343,26 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             tvRatio.setOnClickListener {
                 showRatioPopView()
             }
+            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    p0: SeekBar?,
+                    progress: Int,
+                    p2: Boolean
+                ) {
+                    val camera = cameraControl?.camera ?: return
+                    val cameraInfo = camera.cameraInfo
+                    val range = cameraInfo.exposureState.exposureCompensationRange
+                    val currentIndex = (range.upper - range.lower) * progress / 100
+                    camera.cameraControl.setExposureCompensationIndex(currentIndex)
+                }
+
+                override fun onStartTrackingTouch(p0: SeekBar?) {
+                }
+
+                override fun onStopTrackingTouch(p0: SeekBar?) {
+                    showExposureSeekbar()
+                }
+            })
         }
 
     }
@@ -459,6 +432,14 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         }
     }
 
+    fun showExposureSeekbar() {
+        exposureJob?.cancel()
+        binding?.layoutCamera?.seekBar?.isVisible = true
+        exposureJob = safeLaunch {
+            delay(3000)
+            binding?.layoutCamera?.seekBar?.isVisible = false
+        }
+    }
 
 }
 
