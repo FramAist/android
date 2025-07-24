@@ -1,6 +1,5 @@
 package com.zss.framaist.home
 
-import android.content.Intent
 import androidx.activity.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.angcyo.tablayout.delegate2.ViewPager2Delegate
@@ -18,6 +17,7 @@ import com.zss.framaist.bean.SceneTypeEnum
 import com.zss.framaist.databinding.ActivityRecommendListBinding
 import com.zss.framaist.fram.CameraVM
 import com.zss.framaist.fram.ui.CameraActivity
+import com.zss.framaist.fram.ui.navTo
 
 class RecommendListActivity : BaseActivity<ActivityRecommendListBinding>() {
 
@@ -84,9 +84,9 @@ class RecommendListActivity : BaseActivity<ActivityRecommendListBinding>() {
                 requireNotNull(taskId)
                 vm.confirmSuggestion(taskId, it.id)
             }
-            val intent = Intent(this@RecommendListActivity, CameraActivity::class.java)
-            intent.putExtra(IntentKey.DATA, it)
-            startActivity(intent)
+            navTo<CameraActivity> { intent ->
+                intent.putExtra(IntentKey.DATA, it)
+            }
         }
     }
 }

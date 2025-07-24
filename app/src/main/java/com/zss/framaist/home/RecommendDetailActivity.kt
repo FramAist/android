@@ -4,8 +4,10 @@ import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.zss.base.BaseActivity
 import com.zss.base.util.setOnSingleClickedListener
+import com.zss.common.constant.EventConstant
 import com.zss.common.constant.IntentKey
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.common.showNotSupportedDialog
@@ -61,6 +63,9 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
                 showNotSupportedDialog(this@RecommendDetailActivity)
             }
             tvGoToCamera.setOnSingleClickedListener {
+                recommendModel ?: return@setOnSingleClickedListener
+                LiveEventBus.get<RecommendModel>(EventConstant.EVENT_CONFIRM_COMPOSITION)
+                    .post(recommendModel)
                 navTo<CameraActivity> {
                     it.putExtra(IntentKey.DATA, recommendModel)
                 }
