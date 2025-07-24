@@ -118,15 +118,13 @@ class CameraVM : BaseVM<CameraRepo>() {
                 var status = ""
                 while (repeatTime < ANALYZE_INTERNAL) {
                     delay(1000)
-                    //todo
-                    val tempTaskId ="575346463203131393"
-                    suggestionRes = repo.getSuggestion(tempTaskId)
-                    //suggestionRes = repo.getSuggestion(res.task_id)
+                    //val tempTaskId ="575346463203131393"
+                    //suggestionRes = repo.getSuggestion(tempTaskId)
+                    suggestionRes = repo.getSuggestion(res.task_id)
                     LL.e("xdd $suggestionRes")
                     status = suggestionRes?.status.toString()
                     suggestionRes?.taskId = res.task_id
-                    //todo
-                    suggestionRes?.taskId = tempTaskId
+                    //suggestionRes?.taskId = tempTaskId
                     if (status != "pending" && status != "processing") {
                         con.resume(suggestionRes)
                         return@launch
