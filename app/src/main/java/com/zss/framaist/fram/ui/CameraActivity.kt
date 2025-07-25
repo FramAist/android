@@ -127,7 +127,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             resp ?: return@collectResumed
             val list = resp.suggestions
             if (resp.status == "failed" || list.isNullOrEmpty()) {
-                toast("构图失败!")
+                val errorInfo = resp.message ?: "构图失败!"
+                toast(errorInfo)
                 return@collectResumed
             }
             navTo<RecommendListActivity> {
