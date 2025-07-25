@@ -105,6 +105,7 @@ class CameraVM : BaseVM<CameraRepo>() {
      */
     suspend fun analyze(data: Bitmap): SuggestionResp? =
         suspendCancellableCoroutine<SuggestionResp?> { con ->
+            var isResumed = false
             launch({
                 val radio = when (aspectRatio.value) {
                     AspectRatio.RATIO_16_9 -> "9:16"
@@ -122,21 +123,33 @@ class CameraVM : BaseVM<CameraRepo>() {
                     when (suggestionRes?.status) {
                         SuggestionStatus.PENDING.desc, SuggestionStatus.PROCESSING.desc -> {
                             delay(1000)
-                            repeatTime++
                         }
 
                         null -> {
-                            con.resumeWithException(IllegalArgumentException("获取构图结果失败!"))
+                            if(!isResumed){
+                                isResumed = true
+                                con.resumeWithException(IllegalArgumentException("获取构图结果失败!"))
+                            }
                         }
 
                         else -> {
-                            con.resume(suggestionRes)
+                            if(!isResumed){
+                                isResumed = true
+                                con.resume(suggestionRes)
+                            }
                         }
                     }
+                    repeatTime++
                 }
-                con.resumeWithException(IllegalArgumentException("构图超时!"))
+                if(!isResumed){
+                    isResumed = true
+                    con.resumeWithException(IllegalArgumentException("构图超时!"))
+                }
             }, {
-                con.resumeWithException(IllegalArgumentException(it))
+                if(!isResumed){
+                    isResumed = true
+                    con.resumeWithException(IllegalArgumentException(it))
+                }
             })
         }
 
