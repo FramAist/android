@@ -378,8 +378,9 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     val camera = cameraControl?.camera ?: return
                     val cameraInfo = camera.cameraInfo
                     val range = cameraInfo.exposureState.exposureCompensationRange
-                    val currentIndex = (range.upper - range.lower) * progress / 100
-                    camera.cameraControl.setExposureCompensationIndex(currentIndex)
+                    val currentIndex =
+                        (range.upper - range.lower) * progress * 1.0 / 100 - range.upper
+                    camera.cameraControl.setExposureCompensationIndex(currentIndex.toInt())
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {
