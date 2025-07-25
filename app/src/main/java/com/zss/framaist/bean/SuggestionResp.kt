@@ -7,7 +7,8 @@ import kotlinx.parcelize.Parcelize
 data class SuggestionResp(
     val status: String,
     val suggestions: List<RecommendModel>?,
-    var taskId: String?
-): Parcelable
+    var taskId: String?,
+    val message: String?
+) : Parcelable
 
 
