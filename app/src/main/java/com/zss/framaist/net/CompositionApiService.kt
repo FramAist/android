@@ -3,7 +3,6 @@ package com.zss.framaist.net
 import com.zss.common.net.ApiResponse
 import com.zss.framaist.bean.AnalyzeResp
 import com.zss.framaist.bean.RecentSuggestionsResp
-import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -39,6 +38,9 @@ interface CompositionApiService {
      * 获取构图建议列表
      */
     @GET("/v1/composition/results")
-    suspend fun getSuggestionList(@Query("number") number: Int): ApiResponse<RecentSuggestionsResp?>
+    suspend fun getSuggestionList(
+        @Query("number") number: Int,
+        @Query("page") page: Int = 1
+    ): ApiResponse<RecentSuggestionsResp?>
 
 }

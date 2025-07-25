@@ -7,14 +7,15 @@ import com.zss.base.glide.ImageLoader.load
 import com.zss.base.mvvm.ViewBindingHolder
 import com.zss.base.mvvm.createViewBindingHolder
 import com.zss.base.util.clipOutline
-import com.zss.framaist.bean.RecommendModel
+import com.zss.framaist.bean.ConfirmedSuggestionResp
 import com.zss.framaist.databinding.ItemMineRecentFramBinding
 
-class RecentFramAdapter : BaseQuickAdapter<RecommendModel, ViewBindingHolder<ItemMineRecentFramBinding>>() {
+class RecentFramAdapter :
+    BaseQuickAdapter<ConfirmedSuggestionResp, ViewBindingHolder<ItemMineRecentFramBinding>>() {
     override fun onBindViewHolder(
         holder: ViewBindingHolder<ItemMineRecentFramBinding>,
         position: Int,
-        item: RecommendModel?
+        item: ConfirmedSuggestionResp?
     ) {
         holder.viewBinding?.apply {
             clRoot.clipOutline(8)
