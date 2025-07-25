@@ -41,6 +41,7 @@ import com.zss.common.util.PermissionUtil
 import com.zss.framaist.R
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
+import com.zss.framaist.bean.SuggestionStatus
 import com.zss.framaist.bean.UiMode
 import com.zss.framaist.databinding.ActivityCameraBinding
 import com.zss.framaist.fram.CameraDialogHelper
@@ -126,7 +127,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         vm.submitPic.collectResumed(this) { resp ->
             resp ?: return@collectResumed
             val list = resp.suggestions
-            if (resp.status == "failed" || list.isNullOrEmpty()) {
+            if (resp.status == SuggestionStatus.FAILED.desc || resp.status == SuggestionStatus.TIMEOUT.desc || list.isNullOrEmpty()) {
                 val errorInfo = resp.message ?: "构图失败!"
                 toast(errorInfo)
                 return@collectResumed

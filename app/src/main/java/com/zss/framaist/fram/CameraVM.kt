@@ -16,6 +16,7 @@ import com.zss.common.util.MMKVUtil
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp
+import com.zss.framaist.bean.SuggestionStatus
 import com.zss.framaist.bean.UiMode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -113,29 +114,28 @@ class CameraVM : BaseVM<CameraRepo>() {
                 val res = repo.analyzeRemote(data, radio)
                 LL.e("xdd $res $radio")
                 requireNotNull(res) { "解析构图失败!" }
-                var suggestionRes: SuggestionResp? = null
                 var repeatTime = 1
-                var status = ""
                 while (repeatTime < ANALYZE_INTERNAL) {
                     delay(1000)
-                    //val tempTaskId ="575346463203131393"
-                    //suggestionRes = repo.getSuggestion(tempTaskId)
-                    suggestionRes = repo.getSuggestion(res.task_id)
-                    LL.e("xdd $suggestionRes")
-                    status = suggestionRes?.status.toString()
+                    val suggestionRes = repo.getSuggestion(res.task_id)
                     suggestionRes?.taskId = res.task_id
-                    //suggestionRes?.taskId = tempTaskId
-                    if (status != "pending" && status != "processing") {
-                        con.resume(suggestionRes)
-                        return@launch
+                    when (suggestionRes?.status) {
+                        SuggestionStatus.PENDING.desc, SuggestionStatus.PROCESSING.desc -> {
+                            delay(1000)
+                            repeatTime++
+                        }
+
+                        null -> {
+                            con.resumeWithException(IllegalArgumentException("获取构图结果失败!"))
+                        }
+
+                        else -> {
+                            con.resume(suggestionRes)
+                        }
                     }
-                    delay(1000)
-                    repeatTime++
-                    LL.e("xdd 循环次数:$repeatTime")
                 }
                 con.resumeWithException(IllegalArgumentException("构图超时!"))
             }, {
-                LL.e("xdd 构图失败!$it")
                 con.resumeWithException(IllegalArgumentException(it))
             })
         }
@@ -187,7 +187,7 @@ class CameraVM : BaseVM<CameraRepo>() {
             val res = analyze(bitmap)
             _submitPic.value = res
             //接口返回失败时允许再次提交
-            if (res?.status == "failed") {
+            if (res?.status == SuggestionStatus.FAILED.desc || res?.status == SuggestionStatus.TIMEOUT.desc) {
                 setUiMode(UiMode.PICTURE)
             } else {
                 setUiMode(UiMode.CAMERA)
