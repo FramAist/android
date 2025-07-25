@@ -3,7 +3,6 @@ package com.zss.framaist.home
 import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import com.bumptech.glide.Glide
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.zss.base.BaseActivity
 import com.zss.base.glide.ImageLoader.load
@@ -44,7 +43,7 @@ class RecommendDetailActivity : BaseActivity<ActivityRecommendDetailBinding>() {
             tvTitle.text = recommendModel?.title
             tvDesc.text = recommendModel?.desc
             tvGoToCamera.isGone = enterSource == SOURCE_CAMERA
-            ivPic.load(this@RecommendDetailActivity,recommendModel?.image_url)
+            ivPic.load(this@RecommendDetailActivity, recommendModel?.image_url)
         }
     }
 

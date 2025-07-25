@@ -1,6 +1,7 @@
 package com.zss.framaist.fram
 
 import android.graphics.Bitmap
+import androidx.core.graphics.scale
 import com.blankj.utilcode.util.TimeUtils
 import com.zss.base.mvvm.BaseRepository
 import com.zss.common.net.getOrNull
@@ -16,11 +17,12 @@ class CameraRepo : BaseRepository() {
     val api = GlobalApiManager.composeApiService
     suspend fun analyzeRemote(data: Bitmap, ratio: String): AnalyzeResp? {
         val stream = ByteArrayOutputStream()
-        data.compress(Bitmap.CompressFormat.JPEG, 30, stream)
+        data.compress(Bitmap.CompressFormat.JPEG, 70, stream)
         val byteArray = stream.toByteArray()
-        val stream2 = ByteArrayOutputStream()
-        val byteArray2 = stream2.toByteArray()
-        data.compress(Bitmap.CompressFormat.JPEG, 10, stream)
+        val scaledStream = ByteArrayOutputStream()
+        val scaledByteArray = scaledStream.toByteArray()
+        val scaledBitmap = data.getScaledBitmap()
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, scaledStream)
         val rb = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
@@ -31,7 +33,7 @@ class CameraRepo : BaseRepository() {
             .addFormDataPart(
                 "optimized_file",
                 "image.jpg",
-                byteArray2.toRequestBody(("image/jpeg").toMediaTypeOrNull())
+                scaledByteArray.toRequestBody(("image/jpeg").toMediaTypeOrNull())
             )
             .addFormDataPart("scene_type", "full")
             .addFormDataPart("created_at", TimeUtils.getNowString())
@@ -42,5 +44,17 @@ class CameraRepo : BaseRepository() {
 
     suspend fun getSuggestion(taskId: String): SuggestionResp? {
         return api.getSuggestion(taskId).getOrNull()
+    }
+
+    /**
+     * 压缩最大边长不超过960
+     */
+    fun Bitmap.getScaledBitmap(targetSize: Int = 960): Bitmap {
+        val (targetWidth, targetHeight) = if (width > height) {
+            targetSize to (height * targetSize / width)
+        } else {
+            (width * targetSize / height) to targetSize
+        }
+        return this.scale(targetWidth, targetHeight)
     }
 }
