@@ -19,10 +19,13 @@ class CameraRepo : BaseRepository() {
         val stream = ByteArrayOutputStream()
         data.compress(Bitmap.CompressFormat.JPEG, 70, stream)
         val byteArray = stream.toByteArray()
+
+        // 压缩至边长不超过960
         val scaledStream = ByteArrayOutputStream()
-        val scaledByteArray = scaledStream.toByteArray()
         val scaledBitmap = data.getScaledBitmap()
         scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, scaledStream)
+        val scaledByteArray = scaledStream.toByteArray()
+
         val rb = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
@@ -49,7 +52,7 @@ class CameraRepo : BaseRepository() {
     /**
      * 压缩最大边长不超过960
      */
-    fun Bitmap.getScaledBitmap(targetSize: Int = 960): Bitmap {
+    fun Bitmap.getScaledBitmap(targetSize: Int = 720): Bitmap {
         val (targetWidth, targetHeight) = if (width > height) {
             targetSize to (height * targetSize / width)
         } else {
