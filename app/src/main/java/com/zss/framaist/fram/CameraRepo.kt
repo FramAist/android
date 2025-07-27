@@ -52,7 +52,7 @@ class CameraRepo : BaseRepository() {
     /**
      * 压缩最大边长不超过960
      */
-    fun Bitmap.getScaledBitmap(targetSize: Int = 720): Bitmap {
+    fun Bitmap.getScaledBitmap(targetSize: Int = 960): Bitmap {
         val (targetWidth, targetHeight) = if (width > height) {
             targetSize to (height * targetSize / width)
         } else {
