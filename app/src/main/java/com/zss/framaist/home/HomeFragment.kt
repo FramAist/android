@@ -48,7 +48,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     putExtra(IntentKey.SOURCE, SOURCE_LIST)
                 })
             }
-            ivScenery.loadImage(requireActivity(), R.drawable.ic_bg, 12)
+            ivScenery.loadImage(requireActivity(), com.zss.base.R.drawable.ic_holder_150_150, 12)
         }
     }
 

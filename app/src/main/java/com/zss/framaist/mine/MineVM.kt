@@ -2,10 +2,8 @@ package com.zss.framaist.mine
 
 import com.zss.base.mvvm.BaseVM
 import com.zss.base.mvvm.launch
-import com.zss.base.util.LL
 import com.zss.common.net.getOrNull
 import com.zss.framaist.bean.ConfirmedSuggestionResp
-import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.net.GlobalApiManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,16 +17,13 @@ class MineVM : BaseVM<MineRepo>() {
 
     private val api = GlobalApiManager.composeApiService
 
-    private val _recentList: MutableStateFlow<List<ConfirmedSuggestionResp>> = MutableStateFlow(listOf())
+    private val _recentList: MutableStateFlow<List<ConfirmedSuggestionResp>> =
+        MutableStateFlow(listOf())
     val recentList: StateFlow<List<ConfirmedSuggestionResp>> = _recentList.asStateFlow()
 
     fun getRecentCompose() {
         launch({
-            val res = api.getSuggestionList(20).getOrNull()?.results ?: listOf()
-            LL.e("xdd $res")
-            _recentList.value = res
-        },{
-            LL.e("xdd $it")
+            _recentList.value = api.getSuggestionList(20).getOrNull()?.results ?: listOf()
         })
     }
 

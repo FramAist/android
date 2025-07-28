@@ -12,6 +12,6 @@
         android:layout_width="120dp"
         android:layout_height="160dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_bg" />
+        android:src="@drawable/ic_holder_150_150" />
 
 </com.hjq.shape.layout.ShapeConstraintLayout>

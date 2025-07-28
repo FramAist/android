@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_bg"
+        android:src="@drawable/ic_holder_150_150"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

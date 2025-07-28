@@ -195,7 +195,6 @@ class CameraControl(val activity: CameraActivity) {
                     val bitmap = image.toBitmap()
                     val correctedBitmap = rotateBitmap(bitmap, rotationDegrees) // 旋转修正
                     onSuccess(correctedBitmap)
-
                     image.close() // 必须手动释放资源！
                 }
             })
@@ -217,9 +216,7 @@ class CameraControl(val activity: CameraActivity) {
         val action = FocusMeteringAction.Builder(point)
             .setAutoCancelDuration(3, TimeUnit.SECONDS)
             .build()
-        val cameraControl = camera?.cameraControl ?: return
-        // 触发对焦
-        cameraControl.startFocusAndMetering(action)
+        camera?.cameraControl?.startFocusAndMetering(action)
     }
 
 }
