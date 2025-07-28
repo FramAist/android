@@ -84,8 +84,8 @@ android {
 
     applicationVariants.all {
         outputs.forEach {
-            val timeNow = SimpleDateFormat("yyyyMMdd").format(Date())
-            val newName = "framasit_${buildType.name}_${versionCode}_${timeNow}.apk"
+            val timeNow = SimpleDateFormat("MMdd").format(Date())
+            val newName = "framasit_${buildType.name.take(1)}_v${versionName}_${timeNow}.apk"
             (it as BaseVariantOutputImpl).outputFileName = newName
         }
     }
