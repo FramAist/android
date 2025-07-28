@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.RenderEffect
 import android.graphics.Shader
+import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.view.MotionEvent
+import android.view.OrientationEventListener
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.SeekBar
@@ -72,6 +74,36 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
     private var exposureJob: Job? = null
 
+    var isPortrait = true
+    var screenOrientation: Int = 0
+
+    val oel by lazy {
+        object : OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+            override fun onOrientationChanged(orientation: Int) {
+                screenOrientation = orientation
+                when (orientation) {
+                    in 0 until 45, in 315 until 360 -> {
+                        isPortrait = true
+                    }
+
+                    in 45 until 135 -> {
+                        isPortrait = false
+                    }
+
+                    in 135 until 225 -> {
+                        isPortrait = true
+                    }
+
+                    in 225 until 315 -> {
+                        isPortrait = false
+                    }
+                }
+            }
+        }
+
+    }
+
+
     private val requestPermissionDialog: CenterPopupView by lazy {
         CameraDialogHelper.getGoToPermissionDialog(this, onConfirm = {
             val intent = Intent()
@@ -124,6 +156,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     @SuppressLint("SetTextI18n")
     override fun observe() {
         super.observe()
+        // 方向传感器监听,配置SENSOR_DELAY_NORMAL属性可以排除一些中间的波动值
+        oel.enable()
         vm.submitPic.collectResumed(this) { resp ->
             resp ?: return@collectResumed
             val list = resp.suggestions
@@ -178,9 +212,8 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
             }
         }
         vm.tempPic.collectResumed(this) {
-            it ?: return@collectResumed
-            binding ?: return@collectResumed
-            Glide.with(this@CameraActivity).load(it).into(binding!!.layoutPicture.ivPreview)
+            it.first ?: return@collectResumed
+            binding?.layoutPicture?.ivPreview?.load(this@CameraActivity, it.first)
         }
         vm.uiMode.collectResumed(this) {
             binding?.apply {
@@ -260,9 +293,9 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         LL.e("xdd 开始拍照  停止分析景深")
         try {
             playShutterEffect()
-            cameraControl?.takePicture {
+            cameraControl?.takePicture(screenOrientation) {
                 vm.setUiMode(UiMode.PICTURE)
-                vm.setPicture(it)
+                vm.setPicture(it, screenOrientation)
                 vm.analyzeImage(it)
             }
 
@@ -312,11 +345,12 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         isPreSubmit = false
         dismissLoading()
         vm.setRecommendData(null)
-        vm.setPicture(null)
+        vm.setPicture(null, 0)
     }
 
     override fun onDestroy() {
         resetPicture()
+        oel.canDetectOrientation()
         super.onDestroy()
     }
 
@@ -414,7 +448,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 }
                 vm.setUiMode(UiMode.LOADING)
                 //生成了图片,但是没分析完景深
-                if (vm.tempPic.value != null && vm.picDepth.value == null) {
+                if (vm.tempPic.value.first != null && vm.picDepth.value == null) {
                     isPreSubmit = true
                     return@setOnSingleClickedListener
                 }

@@ -61,7 +61,10 @@ class CameraVM : BaseVM<CameraRepo>() {
     private val _recommendData: MutableStateFlow<RecommendModel?> = MutableStateFlow(null)
     val recommendData = _recommendData.asStateFlow()
 
-    private val _tempPic: MutableStateFlow<Bitmap?> = MutableStateFlow(null)
+    /**
+     * 拍摄的构图场景图片
+     */
+    private val _tempPic: MutableStateFlow<Pair<Bitmap?, Int>> = MutableStateFlow(Pair(null, 0))
     val tempPic = _tempPic.asStateFlow()
 
     private val _picDepth: MutableStateFlow<DepthAnalysisResult?> = MutableStateFlow(null)
@@ -77,13 +80,13 @@ class CameraVM : BaseVM<CameraRepo>() {
         _aspectRatio.value = ratio
     }
 
-    fun setPicture(bitmap: Bitmap?) {
-        _tempPic.value = bitmap
+    fun setPicture(bitmap: Bitmap?, orientation: Int) {
+        _tempPic.value = Pair(bitmap, orientation)
         DataHelper.tempPicture = bitmap
     }
 
     fun clearPicture() {
-        _tempPic.value = null
+        _tempPic.value = Pair(null, 0)
         DataHelper.tempPicture = null
         _picDepth.value = null
     }
@@ -103,17 +106,27 @@ class CameraVM : BaseVM<CameraRepo>() {
     /**
      * 提交构图,获取构图方案
      */
-    suspend fun analyze(data: Bitmap): SuggestionResp? =
+    suspend fun analyze(data: Bitmap, orientation: Int): SuggestionResp? =
         suspendCancellableCoroutine<SuggestionResp?> { con ->
             var isResumed = false
+            var isPortrait = when (orientation) {
+                in 45 until 135 -> false
+                in 135 until 225 -> true
+                in 225 until 315 -> false
+                else -> true
+            }
             launch({
-                val radio = when (aspectRatio.value) {
-                    AspectRatio.RATIO_16_9 -> "9:16"
-                    AspectRatio.RATIO_4_3 -> "3:4"
-                    else -> "${ScreenUtils.getScreenWidth()}:${ScreenUtils.getScreenHeight()}"
+                val ratio = when (aspectRatio.value) {
+                    AspectRatio.RATIO_16_9 -> getFixedRatio(9, 16, isPortrait)
+                    AspectRatio.RATIO_4_3 -> getFixedRatio(3, 4, isPortrait)
+                    else -> getFixedRatio(
+                        ScreenUtils.getScreenWidth(),
+                        ScreenUtils.getScreenHeight(),
+                        isPortrait
+                    )
                 }
-                val res = repo.analyzeRemote(data, radio)
-                LL.e("xdd $res $radio")
+                val res = repo.analyzeRemote(data, ratio)
+                LL.e("xdd $res $ratio")
                 requireNotNull(res) { "解析构图失败!" }
                 var repeatTime = 1
                 while (repeatTime < ANALYZE_INTERNAL) {
@@ -126,14 +139,14 @@ class CameraVM : BaseVM<CameraRepo>() {
                         }
 
                         null -> {
-                            if(!isResumed){
+                            if (!isResumed) {
                                 isResumed = true
                                 con.resumeWithException(IllegalArgumentException("获取构图结果失败!"))
                             }
                         }
 
                         else -> {
-                            if(!isResumed){
+                            if (!isResumed) {
                                 isResumed = true
                                 con.resume(suggestionRes)
                             }
@@ -141,12 +154,12 @@ class CameraVM : BaseVM<CameraRepo>() {
                     }
                     repeatTime++
                 }
-                if(!isResumed){
+                if (!isResumed) {
                     isResumed = true
                     con.resumeWithException(IllegalArgumentException("构图超时!"))
                 }
             }, {
-                if(!isResumed){
+                if (!isResumed) {
                     isResumed = true
                     con.resumeWithException(IllegalArgumentException(it))
                 }
@@ -190,14 +203,14 @@ class CameraVM : BaseVM<CameraRepo>() {
 
     fun submitPicture() {
         launch({
-            val bitmap = DataHelper.tempPicture
+            val bitmap = tempPic.value.first
             requireNotNull(bitmap) { "获取图片失败!" }
             if (_picDepth.value?.isTooClose == true) {
                 ToastUtils.showShort("距离过近!")
                 setUiMode(UiMode.PICTURE)
                 return@launch
             }
-            val res = analyze(bitmap)
+            val res = analyze(bitmap, tempPic.value.second)
             _submitPic.value = res
             //接口返回失败时允许再次提交
             if (res?.status == SuggestionStatus.FAILED.desc || res?.status == SuggestionStatus.TIMEOUT.desc) {
@@ -209,5 +222,13 @@ class CameraVM : BaseVM<CameraRepo>() {
             ToastUtils.showShort(it)
             setUiMode(UiMode.PICTURE)
         })
+    }
+
+    fun getFixedRatio(width: Int, height: Int, isPortrait: Boolean): String {
+        return if (isPortrait) {
+            "${width}:$height"
+        } else {
+            "${height}:$width"
+        }
     }
 }

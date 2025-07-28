@@ -175,7 +175,7 @@ class CameraControl(val activity: CameraActivity) {
 
     }
 
-    fun takePicture(onSuccess: (bitmap: Bitmap) -> Unit) {
+    fun takePicture(degrees: Int, onSuccess: (bitmap: Bitmap) -> Unit) {
         cameraProviderFuture?.get()?.unbind(imageAnalysis)
         bindUseCase(imageCapture!!)
         val before = System.currentTimeMillis()
@@ -190,10 +190,16 @@ class CameraControl(val activity: CameraActivity) {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
                     val end = System.currentTimeMillis()
-                    LL.e("xdd 总拍摄时间: ${end - before}")
-                    val rotationDegrees = image.imageInfo.rotationDegrees
+                    LL.e("xdd 总拍摄时间: ${end - before} ${image.width} ${image.height} ")
                     val bitmap = image.toBitmap()
-                    val correctedBitmap = rotateBitmap(bitmap, rotationDegrees) // 旋转修正
+                    //修正屏幕旋转角度
+                    val fixedRotationDegree = when (degrees) {
+                        in 45 until 135 -> 180
+                        in 135 until 225 -> 270
+                        in 225 until 315 -> 0
+                        else -> 90
+                    }
+                    val correctedBitmap = rotateBitmap(bitmap, fixedRotationDegree) // 旋转修正
                     onSuccess(correctedBitmap)
                     image.close() // 必须手动释放资源！
                 }
@@ -218,5 +224,4 @@ class CameraControl(val activity: CameraActivity) {
             .build()
         camera?.cameraControl?.startFocusAndMetering(action)
     }
-
 }

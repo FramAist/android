@@ -8,9 +8,10 @@
     <ImageView
         android:id="@+id/ivPreview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="10dp"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@id/btnRePicture"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,9 +71,9 @@
             android:id="@+id/tvSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="提交构图"
             android:layout_gravity="center"
             android:layout_marginStart="4dp"
+            android:text="提交构图"
             android:textColor="@color/white"
             android:textSize="14sp" />
 
