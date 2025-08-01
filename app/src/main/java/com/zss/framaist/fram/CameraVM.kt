@@ -190,7 +190,8 @@ class CameraVM : BaseVM<CameraRepo>() {
         job?.cancel()
         job = launch({
             DepthHelper.isPredicting = true
-            val result = depthManager.predictFromBitmapAsync(bitmap)
+            //TODO  先关闭景深检测
+            val result = depthManager.predictFromBitmapAsync(bitmap)?.copy(isTooClose = false)
             LL.e("xdd 分析景深 ${result?.isTooClose}")
             DepthHelper.isPredicting = false
             result?.bitmap = bitmap
