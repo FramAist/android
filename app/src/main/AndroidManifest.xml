@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera.any" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 
     <application
         android:name="com.zss.base.BaseApplication"
@@ -24,28 +23,31 @@
         android:theme="@style/Theme.PxApp"
         tools:targetApi="31">
         <activity
-            android:name="com.zss.framaist.entrance.EntranceSplashActivity"
+            android:name=".entrance.EntranceSplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".entrance.EntranceMainActivity"
             android:launchMode="singleTask" />
-        <activity android:name="com.zss.framaist.login.LoginActivity" />
-        <activity android:name="com.zss.framaist.mine.UserInfoActivity" />
-        <activity android:name="com.zss.framaist.mine.PswManagerActivity" />
-        <activity android:name="com.zss.framaist.mine.PswModifyResultActivity" />
-        <activity android:name="com.zss.framaist.home.RecommendListActivity" />
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".mine.UserInfoActivity" />
+        <activity android:name=".mine.PswManagerActivity" />
+        <activity android:name=".mine.PswModifyResultActivity" />
+        <activity android:name=".home.RecommendListActivity" />
         <activity
-            android:name="com.zss.framaist.fram.ui.CameraActivity"
+            android:name=".fram.ui.CameraActivity"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop" />
-        <activity android:name="com.zss.framaist.home.RecommendDetailActivity" />
-        <activity android:name="com.zss.framaist.fram.ui.PictureSavedActivity" />
-        <activity android:name="com.zss.framaist.compose.MainActivity" />
+        <activity android:name=".home.RecommendDetailActivity" />
+        <activity android:name=".fram.ui.PictureSavedActivity" />
+        <activity android:name=".compose.MainActivity" />
+        <activity android:name=".compose.RecentListActivity" />
+
     </application>
 
 </manifest>

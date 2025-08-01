@@ -1,16 +1,16 @@
 [versions]
 agp = "8.9.3"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 coreKtx = "1.16.0"
-fragmentKtx = "1.6.2"
+fragmentKtx = "1.8.8"
 viewBinding = "8.11.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
-composeBom = "2024.09.00"
-appcompat = "1.7.0"
+composeBom = "2025.07.00"
+appcompat = "1.7.1"
 material = "1.12.0"
 
 # Kotlin or Google
@@ -102,6 +102,7 @@ adapter = "2.4.3"
 autosize = "v1.2.1"
 leakcanary = "2.14"
 spinKit = "1.4.0"
+uiTooling = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -232,6 +233,7 @@ google-google-services = { module = "com.google.gms:google-services", version.re
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 viewpagerindicator = { module = "com.github.zhpanvip:viewpagerindicator", version.ref = "viewpagerindicator" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 
 [plugins]

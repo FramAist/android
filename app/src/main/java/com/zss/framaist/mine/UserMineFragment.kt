@@ -10,7 +10,9 @@ import com.zss.base.util.LL
 import com.zss.base.util.collectResumed
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.util.MMKVUtil
+import com.zss.framaist.compose.RecentListActivity
 import com.zss.framaist.databinding.UserFragmentMineBinding
+import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
 
 
@@ -55,6 +57,9 @@ class UserMineFragment : BaseFragment<UserFragmentMineBinding>() {
                 startActivity(Intent(requireActivity(), LoginActivity::class.java))
                 requireActivity().finish()
                 MMKVUtil.logout()
+            }
+            tvMoreHistory.setOnSingleClickedListener {
+                //requireActivity().navTo<RecentListActivity>()
             }
         }
     }

@@ -26,7 +26,7 @@ inline fun <T : View> T.setOnSingleClickedListener(
     }
 }
 
-fun getResDrawable(id: Int): Drawable {
+fun getResDrawable(id: Int): Drawable? {
     return ResourcesCompat.getDrawable(BaseApplication.instance.resources, id, null)
 }
 
