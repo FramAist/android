@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +42,7 @@ import com.zss.framaist.compose.MoreMessageCard
 import com.zss.framaist.compose.RecentComposeList
 import com.zss.framaist.compose.RecentListActivity
 import com.zss.framaist.compose.TitleCard
+import com.zss.framaist.compose.UserInfoCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
@@ -67,66 +67,6 @@ class UserMineFragment : Fragment() {
 
 }
 
-@Composable
-fun UserInfoCard(user: UserInfoBean?, onClick: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)
-            .background(colorResource(R.color.black))
-            .clickable(onClick = {
-                onClick()
-            })
-    ) {
-        Box(
-            modifier = Modifier
-                .width(65.dp)
-                .height(65.dp)
-                .background(Color(0xFFBEBEBE), CircleShape)
-                .padding(vertical = 12.dp, horizontal = 10.dp)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_account_b1),
-                contentDescription = null
-            )
-        }
-        val name = if (user == null) "" else user.nickName ?: "用户${
-            user.user_id.substring(
-                user.user_id.length - 6,
-                user.user_id.length
-            )
-        }"
-
-        Column {
-            Text(
-                text = name,
-                fontSize = 18.sp,
-                color = colorResource(R.color.white),
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(start = 12.dp)
-
-            )
-            Text(
-                "内测用户",
-                color = colorResource(com.zss.base.R.color.gray_9da3ae),
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(start = 12.dp, 4.dp)
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painterResource(R.drawable.ic_arrow_right_gray_9da3ae),
-            null,
-            modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-        )
-    }
-}
 
 @Composable
 fun ItemCard(item: ItemInfo, onClick: () -> Unit = {}) {
@@ -208,7 +148,6 @@ fun RecentComposeTitleCard(onClick: () -> Unit) {
         RecentComposeList()
     }
 }
-
 
 
 @Composable
