@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import com.zss.base.ui.BaseFragment
 import com.zss.framaist.databinding.FragmentDiscoverBinding
-import com.zss.framaist.databinding.UserFragmentMineBinding
 
 
 /**

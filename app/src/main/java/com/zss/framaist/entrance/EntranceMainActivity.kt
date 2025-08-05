@@ -1,11 +1,24 @@
 package com.zss.framaist.entrance
 
-import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.viewpager2.widget.ViewPager2
 import com.example.depthestimation.DepthHelper
 import com.zss.base.BaseActivity
 import com.zss.base.recyclerView.BaseNoLeakVPAdapter
 import com.zss.common.net.safeLaunch
+import com.zss.framaist.R
 import com.zss.framaist.common.showNotSupportedDialog
 import com.zss.framaist.databinding.EntranceActivityMainEntranceBinding
 import com.zss.framaist.discover.DiscoverFragment
@@ -136,4 +149,79 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
             }
         }
     }
+}
+
+@Composable
+fun SmoothBottomNav(modifier: Modifier = Modifier) {
+    NavigationBar(
+        containerColor = colorResource(com.zss.base.R.color.black_2d),
+        modifier = modifier
+    ) {
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_home_blue), null, modifier = Modifier.width(24.dp)
+                )
+            },
+            selected = true,
+            label = {
+                Text(
+                    text = "首页",
+                    color = Color.White
+                )
+            },
+            onClick = {},
+            modifier = Modifier.background(color = colorResource(com.zss.base.R.color.black_2d))
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(painterResource(R.drawable.ic_home_blue), null)
+            },
+            selected = true,
+            label = {
+                Text(
+                    text = "发现"
+                )
+            },
+            onClick = {}
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(painterResource(R.drawable.ic_home_blue), null)
+            },
+            selected = true,
+            label = null,
+            onClick = {}
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(painterResource(R.drawable.ic_home_blue), null)
+            },
+            selected = true,
+            label = {
+                Text(
+                    text = "工坊"
+                )
+            },
+            onClick = {}
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(painterResource(R.drawable.ic_home_blue), null)
+            },
+            selected = true,
+            label = {
+                Text(
+                    text = "我的"
+                )
+            },
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NavPreview(modifier: Modifier = Modifier) {
+    SmoothBottomNav()
 }

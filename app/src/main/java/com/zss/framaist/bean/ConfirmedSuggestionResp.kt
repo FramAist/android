@@ -10,3 +10,7 @@ data class ConfirmedSuggestionResp(
     val model_version: String?,
     val saved_at: String?
 )
+
+enum class SceneType() {
+    LONG, FULL, MEDIUM
+}
