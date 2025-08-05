@@ -1,17 +1,26 @@
 package com.zss.framaist.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,13 +28,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zss.base.util.toast
+import com.zss.framaist.R
+import com.zss.framaist.compose.ui.theme.FramAistTheme
 
 @Composable
 fun ConfirmBtn(confirmText: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
@@ -94,6 +108,9 @@ fun TitleCard(title: String) {
     }
 }
 
+/**
+ * title + 更多
+ */
 @Composable
 fun MoreMessageCard(title: String, onClick: () -> Unit) {
     Row(
@@ -116,8 +133,60 @@ fun MoreMessageCard(title: String, onClick: () -> Unit) {
     }
 }
 
-@Preview
+@Composable
+fun ConfirmButton(title: String, onConfirm: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = {
+            onConfirm()
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.Blue),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color.White
+        ),
+        contentPadding = PaddingValues(vertical = 10.dp)
+    ) {
+        Text(text = title, fontSize = 18.sp)
+    }
+}
+
+@Composable
+fun BackTitleCard(title: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .padding(top = 78.dp)
+            .clickable(onClick = onBack),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_left_white), null,
+            modifier = modifier
+                .background(
+                    color = Color.DarkGray,
+                    shape = CircleShape,
+                )
+                .size(28.dp)
+                .padding(5.dp)
+        )
+        Spacer(modifier.width(16.dp))
+        Text(text = title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 fun TitlePreview() {
-    TitleCard("fsdf")
+    FramAistTheme {
+        Column {
+            BackTitleCard("账号管理", {})
+            ConfirmButton("f's'd'f", {})
+        }
+    }
 }
+
