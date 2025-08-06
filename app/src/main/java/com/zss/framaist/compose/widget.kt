@@ -1,5 +1,6 @@
 package com.zss.framaist.compose
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -90,7 +91,6 @@ fun ConfirmButton(
             onConfirm()
         },
         modifier = modifier
-            .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .background(Color.Blue),
         colors = ButtonDefaults.buttonColors(
@@ -105,6 +105,34 @@ fun ConfirmButton(
             modifier = modifier
                 .wrapContentWidth()
                 .padding(horizontal = 22.dp)
+        )
+    }
+}
+
+@Composable
+fun BaseButton(
+    content: String,
+    onConfirm: () -> Unit,
+    textColor:Color = Color.White,
+    bgColor: Color = Color.Transparent,
+    borderColor: Color = Color.Transparent,
+) {
+    Button(
+        onClick = {
+            onConfirm()
+        },
+        border = BorderStroke(1.dp, color = borderColor ),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = bgColor,
+            contentColor = textColor
+        ),
+    ) {
+        Text(
+            text = content,
+            fontSize = 16.sp,
+            modifier = Modifier
+                .wrapContentWidth()
         )
     }
 }
@@ -202,9 +230,14 @@ fun UserInfoCard(user: UserInfoBean?, onClick: (() -> Unit)?) {
 @Composable
 fun TitlePreview() {
     FramAistTheme {
-        Column {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp)
+        ) {
             UserInfoCard(null, null)
-            ConfirmButton("fdsf", onConfirm = {}, modifier = Modifier, fillMaxWidth = false)
+            Spacer(modifier = Modifier.height(30.dp))
+            ConfirmButton("fdsf", onConfirm = {}, modifier = Modifier)
+            Spacer(modifier = Modifier.height(30.dp))
+            BaseButton("fdsf", onConfirm = {})
         }
     }
 }

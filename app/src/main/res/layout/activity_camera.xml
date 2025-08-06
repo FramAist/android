@@ -17,5 +17,9 @@
         android:id="@+id/layoutLoading"
         layout="@layout/layout_loading_fram" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/savePicResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

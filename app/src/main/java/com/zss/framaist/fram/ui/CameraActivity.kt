@@ -3,6 +3,7 @@ package com.zss.framaist.fram.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.hardware.SensorManager
@@ -20,6 +21,29 @@ import androidx.activity.viewModels
 import androidx.annotation.OptIn
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.ExperimentalGetImage
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.IntentCompat.getParcelableExtra
 import androidx.core.view.isGone
@@ -45,7 +69,10 @@ import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionStatus
 import com.zss.framaist.bean.UiMode
+import com.zss.framaist.compose.BaseButton
+import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.databinding.ActivityCameraBinding
+import com.zss.framaist.entrance.EntranceMainActivity
 import com.zss.framaist.fram.CameraDialogHelper
 import com.zss.framaist.fram.CameraVM
 import com.zss.framaist.fram.DataHelper
@@ -334,7 +361,17 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         dismissLoading()
         if (res) {
             resetPicture()
-            startActivity(Intent(this@CameraActivity, PictureSavedActivity::class.java))
+            binding?.savePicResult?.apply {
+                isVisible = true
+                setContent {
+                    PictureSavedScreen(image, {
+                        finish()
+                        navTo<EntranceMainActivity>()
+                    }, {
+                        isVisible = false
+                    })
+                }
+            }
         }
     }
 
@@ -345,7 +382,7 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         isPreSubmit = false
         dismissLoading()
         vm.setRecommendData(null)
-        vm.setPicture(null, 0)
+        vm.clearPicture()
     }
 
     override fun onDestroy() {
@@ -501,6 +538,81 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         exposureJob = safeLaunch {
             delay(3000)
             binding?.layoutCamera?.seekBar?.isVisible = false
+        }
+    }
+
+    @Composable
+    fun PictureSavedScreen(bitmap: Bitmap?, onBack: () -> Unit, onContinue: () -> Unit) {
+        FramAistTheme {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+            ) {
+                Spacer(modifier = Modifier.height(120.dp))
+                Image(
+                    painter = painterResource(R.drawable.ic_yes_white),
+                    null,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(120.dp))
+                        .background(Color.Blue)
+                        .padding(vertical = 20.dp, horizontal = 30.dp)
+                )
+                Text(
+                    text = "已保存到相册",
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+                Text(
+                    text = "您的照片已成功保存到手机相册中,可前往相册查看",
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 20.dp, start = 80.dp, end = 80.dp)
+                )
+                bitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        null,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(280.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .padding(top = 30.dp)
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                Row {
+                    BaseButton(
+                        content = "返回首页",
+                        onConfirm = onBack,
+                        borderColor = Color.White
+                    )
+                    Spacer(Modifier.width(20.dp))
+                    BaseButton(
+                        content = "继续拍摄",
+                        onConfirm = onContinue,
+                        bgColor = Color.Blue
+                    )
+                }
+                Spacer(modifier = Modifier.height(30.dp))
+            }
+        }
+    }
+
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun ButtonPreview() {
+        Row {
+            BaseButton(
+                content = "返回首页",
+                onConfirm = {},
+                borderColor = Color.White
+            )
         }
     }
 

@@ -44,7 +44,6 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop" />
         <activity android:name=".home.RecommendDetailActivity" />
-        <activity android:name=".fram.ui.PictureSavedActivity" />
         <activity android:name=".compose.MainActivity" />
         <activity android:name=".compose.RecentListActivity" />
 
