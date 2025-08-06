@@ -77,6 +77,7 @@ fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = viewModel()) {
             }
 
             state.error != null -> {
+                vm.clearModifyState()
                 activity?.navTo<PswModifyResultActivity> { intent ->
                     intent.putExtra(IntentKey.ERROR_REASON, state.error)
                 }
@@ -111,12 +112,8 @@ fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = viewModel()) {
         })
         Spacer(modifier.height(20.dp))
         ConfirmButton("确定", {
-            try {
-                if (checkPsw(currentPsw, newPsw, confirmPsw)) {
-                    vm.modifyPswCompose(currentPsw, newPsw)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            if (checkPsw(currentPsw, newPsw, confirmPsw)) {
+                vm.modifyPswCompose(currentPsw, newPsw)
             }
         })
     }

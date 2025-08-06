@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,16 +17,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,60 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zss.base.util.toast
 import com.zss.common.bean.UserInfoBean
 import com.zss.framaist.R
 import com.zss.framaist.compose.ui.theme.FramAistTheme
-
-@Composable
-fun ConfirmBtn(confirmText: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    MaterialTheme {
-
-    }
-}
-
-
-@Preview
-@Composable
-fun SearchBarPreview(modifier: Modifier = Modifier) {
-    MaterialTheme {
-        SearchBar {
-            toast(it)
-        }
-    }
-}
-
-@Composable
-fun SearchBar(modifier: Modifier = Modifier, onValueChange: (stringVal: String) -> Unit) {
-    MaterialTheme {
-        Surface(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(5.dp)
-        ) {
-            TextField(
-                "fadsf",
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = {
-
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface
-                ),
-                modifier = Modifier.heightIn(56.dp)
-            )
-
-        }
-
-    }
-}
 
 @Composable
 fun TitleCard(title: String) {
@@ -137,13 +78,18 @@ fun MoreMessageCard(title: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ConfirmButton(title: String, onConfirm: () -> Unit, modifier: Modifier = Modifier) {
+fun ConfirmButton(
+    title: String,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
+    fillMaxWidth: Boolean = true,
+) {
+    val modifier = if (fillMaxWidth) modifier.fillMaxWidth() else modifier.wrapContentWidth()
     Button(
         onClick = {
             onConfirm()
         },
         modifier = modifier
-            .fillMaxWidth()
             .wrapContentHeight()
             .clip(RoundedCornerShape(8.dp))
             .background(Color.Blue),
@@ -151,9 +97,15 @@ fun ConfirmButton(title: String, onConfirm: () -> Unit, modifier: Modifier = Mod
             containerColor = Color.Transparent,
             contentColor = Color.White
         ),
-        contentPadding = PaddingValues(vertical = 10.dp)
+        contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        Text(text = title, fontSize = 18.sp)
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            modifier = modifier
+                .wrapContentWidth()
+                .padding(horizontal = 22.dp)
+        )
     }
 }
 
@@ -252,6 +204,7 @@ fun TitlePreview() {
     FramAistTheme {
         Column {
             UserInfoCard(null, null)
+            ConfirmButton("fdsf", onConfirm = {}, modifier = Modifier, fillMaxWidth = false)
         }
     }
 }

@@ -42,6 +42,10 @@ class LoginVM : BaseVM<LoginRepo>() {
         _loginMode.value = mode
     }
 
+    fun clearModifyState(){
+        _modifyPswState.value = PasswordChangeState()
+    }
+
 
     suspend fun checkWhiteList(phone: String) = suspendCancellableCoroutine<Boolean> { con ->
         launch({
