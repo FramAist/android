@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -170,12 +171,14 @@ object GlobalOkHttpClient {
     }
 
     private fun getMainBuilder(): OkHttpClient.Builder {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY) // 输出 Body 内容
         val mainBuilder = try {
             OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(10, TimeUnit.SECONDS)
-                // .addInterceptor(CommonQueryParamInterceptor())
+                .addInterceptor(loggingInterceptor)
                 .addInterceptor(headerInterceptor)
                 //.addInterceptor(TokenInterceptor())
                 .addNetworkInterceptor(httpInfoCatchInterceptor)

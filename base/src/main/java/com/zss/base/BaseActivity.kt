@@ -3,9 +3,7 @@ package com.zss.base
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +14,6 @@ import com.lxj.xpopup.impl.LoadingPopupView
 import com.zss.base.util.saveAs
 import com.zss.base.util.saveAsUnChecked
 import kotlinx.coroutines.Job
-import me.jessyan.autosize.AutoSize
-import me.jessyan.autosize.AutoSizeCompat
 import java.lang.reflect.ParameterizedType
 
 
@@ -100,7 +96,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        AutoSize.autoConvertDensityOfGlobal(this)
         //AppGlobal.sCurrentActivity = this
     }
 
@@ -138,13 +133,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     protected open fun childOverWriteBind() = false
 
-    override fun getResources(): Resources {
-        //需要升级到 v1.1.2 及以上版本才能使用 AutoSizeCompat
-        if (Looper.myLooper() == Looper.getMainLooper()) { //避免程序包崩溃
-            AutoSizeCompat.autoConvertDensityOfGlobal(super.getResources()) //如果没有自定义需求用这个方法
-        }
-        return super.getResources()
-    }
 
     override fun finish() {
         super.finish()

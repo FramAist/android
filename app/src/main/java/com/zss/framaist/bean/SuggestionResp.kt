@@ -11,12 +11,4 @@ data class SuggestionResp(
     val message: String?
 ) : Parcelable
 
-enum class SuggestionStatus(val desc: String) {
-    PENDING("pending"),
-    FAILED("failed"),
-    COMPLETED("completed"),
-    PROCESSING("processing"),
-    TIMEOUT("timeout")
-}
-
 

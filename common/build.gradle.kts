@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
-
 }
 
 android {
@@ -19,19 +18,18 @@ android {
     buildTypes {
         release {
             buildConfigField("boolean", "RELEASE", "true")
+            //单独编译时不混淆,如果没有consumerProguardFiles,还是会被主module混淆.
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            //保护本module的混淆规则不受主module影响.
+            consumerProguardFiles("proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
