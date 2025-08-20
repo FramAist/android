@@ -217,6 +217,7 @@
 # 本地api相关
 -keep class com.zss.framaist.net.** {*;}
 -keep interface com.zss.framaist.** { *; }
+-keep class com.example.depthestimation.** {*;}
 
 
 #本地provider
@@ -430,6 +431,10 @@
 -keep class * extends androidx.lifecycle.ViewModel { *; }
 -keepclassmembers class * extends androidx.lifecycle.ViewModel {
     public <init>(...);
+}
+
+-keep class * extends com.zss.base.mvvm.BaseRepository {
+ public <init>(...);
 }
 
 # 导航
