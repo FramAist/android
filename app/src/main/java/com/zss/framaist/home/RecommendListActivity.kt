@@ -18,13 +18,16 @@ import com.zss.framaist.databinding.ActivityRecommendListBinding
 import com.zss.framaist.fram.CameraVM
 import com.zss.framaist.fram.ui.CameraActivity
 import com.zss.framaist.fram.ui.navTo
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RecommendListActivity : BaseActivity<ActivityRecommendListBinding>() {
 
     var taskId: String? = null
-    private val adapterVp: BaseNoLeakVPAdapter by lazy {
-        BaseNoLeakVPAdapter(supportFragmentManager, lifecycle)
-    }
+
+    @Inject
+    lateinit var adapterVp: BaseNoLeakVPAdapter
     val vm: CameraVM by viewModels()
 
     @Suppress("DEPRECATION")
@@ -46,10 +49,10 @@ class RecommendListActivity : BaseActivity<ActivityRecommendListBinding>() {
                     tabFar.setTabSelected(position == 3)
                 }
             })
-            adapterVp.add { RecommendListFragment(data) }
-            adapterVp.add { RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.FULL.value }) }
-            adapterVp.add { RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.MEDIUM.value }) }
-            adapterVp.add { RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.LONG.value }) }
+            adapterVp.add(RecommendListFragment(data))
+            adapterVp.add(RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.FULL.value }))
+            adapterVp.add(RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.MEDIUM.value }))
+            adapterVp.add(RecommendListFragment(data.filter { it.scene_type == SceneTypeEnum.LONG.value }))
         }
     }
 

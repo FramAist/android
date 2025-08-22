@@ -34,9 +34,12 @@ import com.zss.framaist.compose.TitleCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.CameraActivity
 import com.zss.framaist.fram.ui.navTo
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment @Inject constructor() : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

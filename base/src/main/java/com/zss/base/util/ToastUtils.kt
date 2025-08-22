@@ -8,7 +8,7 @@
 //import android.widget.TextView
 //import android.widget.Toast
 //import androidx.core.view.isVisible
-//import com.zss.base.BaseApplication
+//import com.zss.framaist.BaseApplication
 //import com.zss.base.R
 //import java.lang.ref.WeakReference
 //

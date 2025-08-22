@@ -18,8 +18,10 @@ import com.zss.framaist.R
 import com.zss.framaist.common.showNotSupportedDialog
 import com.zss.framaist.databinding.ActivityLoginBinding
 import com.zss.framaist.entrance.EntranceMainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     val vm: LoginVM by viewModels()
     var mCountDownTimer: CountDownTimer? = null

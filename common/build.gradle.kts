@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
 }
@@ -39,5 +40,7 @@ android {
 
 dependencies {
     implementation(project(":base"))
+    implementation(libs.google.hilt)
+    ksp(libs.google.hilt.compiler)
     testApi(libs.androidx.junit)
 }

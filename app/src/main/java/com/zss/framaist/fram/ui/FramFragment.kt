@@ -4,13 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import com.zss.base.ui.BaseFragment
 import com.zss.framaist.databinding.FragmentFrameBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-/**
- * @author :huchenxi
- * @createDate :2024/7/27 11:48
- * @description :我的（用户）
- */
-class FramFragment : BaseFragment<FragmentFrameBinding>() {
+@AndroidEntryPoint
+class FramFragment @Inject constructor() : BaseFragment<FragmentFrameBinding>() {
 
     companion object {
         fun newInstance(context: Context) =

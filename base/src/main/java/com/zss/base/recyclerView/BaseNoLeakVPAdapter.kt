@@ -1,36 +1,33 @@
 package com.zss.base.recyclerView
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
+import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import javax.inject.Inject
 
-typealias HandleFragment = () -> Fragment
 
-open class BaseNoLeakVPAdapter(
-    fragmentManager: FragmentManager,
-    lifecycle: Lifecycle
-) : FragmentStateAdapter(fragmentManager, lifecycle) {
+class BaseNoLeakVPAdapter @Inject constructor(activity: FragmentActivity) :
+    FragmentStateAdapter(activity.supportFragmentManager, activity.lifecycle) {
 
     /**
      * 持有的创建Fragment方法集合
      */
-    private val mFragmentList = mutableListOf<HandleFragment>()
+    private val mFragmentList = mutableListOf<Fragment>()
 
     override fun getItemCount(): Int {
         return mFragmentList.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        return mFragmentList[position].invoke()
+        return mFragmentList[position]
     }
 
-    fun add(fragment: HandleFragment): BaseNoLeakVPAdapter {
+    fun add(fragment: Fragment): BaseNoLeakVPAdapter {
         mFragmentList.add(fragment)
         return this
     }
 
-    fun addAll(fragmentList: List<HandleFragment>): BaseNoLeakVPAdapter {
+    fun addAll(fragmentList: List<Fragment>): BaseNoLeakVPAdapter {
         mFragmentList.addAll(fragmentList)
         return this
     }

@@ -8,11 +8,13 @@ import com.zss.common.bean.LoginResp
 import com.zss.common.net.getOrNull
 import com.zss.common.net.toRequestBody
 import com.zss.framaist.net.GlobalApiManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.json.JSONObject
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -23,7 +25,8 @@ const val MODE_PHONE = 1
 /**
  * 接口少,直接略过repo层,不涉及UI的接口直接使用回调
  */
-class LoginVM : BaseVM<LoginRepo>() {
+@HiltViewModel
+class LoginVM @Inject constructor() : BaseVM<LoginRepo>() {
 
     private val api = GlobalApiManager.userApiService
 
@@ -42,7 +45,7 @@ class LoginVM : BaseVM<LoginRepo>() {
         _loginMode.value = mode
     }
 
-    fun clearModifyState(){
+    fun clearModifyState() {
         _modifyPswState.value = PasswordChangeState()
     }
 

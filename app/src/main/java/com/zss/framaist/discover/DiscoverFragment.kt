@@ -3,15 +3,14 @@ package com.zss.framaist.discover
 import android.content.Context
 import android.view.LayoutInflater
 import com.zss.base.ui.BaseFragment
+import com.zss.base.ui.BaseFragment.Companion.fragmentInstance
 import com.zss.framaist.databinding.FragmentDiscoverBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
-/**
- * @author :huchenxi
- * @createDate :2024/7/27 11:48
- * @description :我的（用户）
- */
-class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
+@AndroidEntryPoint
+class DiscoverFragment @Inject constructor() : BaseFragment<FragmentDiscoverBinding>() {
 
     companion object {
         fun newInstance(context: Context) =

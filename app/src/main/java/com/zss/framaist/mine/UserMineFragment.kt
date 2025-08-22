@@ -46,9 +46,11 @@ import com.zss.framaist.compose.UserInfoCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
-class UserMineFragment : Fragment() {
+@AndroidEntryPoint
+class UserMineFragment @Inject constructor() : Fragment() {
 
     private val vm: MineVM by viewModels()
 

@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.zss.base.ui.BaseFragment
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.databinding.FragmentRecommendListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class RecommendListFragment(val list: List<RecommendModel>) :
     BaseFragment<FragmentRecommendListBinding>() {
 

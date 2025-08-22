@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     id("kotlin-parcelize")
 }
 
@@ -81,5 +82,7 @@ dependencies {
     api(libs.third.utilcodex)
     api(libs.third.spin.kit)
     api(libs.androidx.fragment.ktx)
+    implementation(libs.google.hilt)
+    ksp(libs.google.hilt.compiler)
     api(libs.databinding.viewbinding)
 }

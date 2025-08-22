@@ -1,14 +1,15 @@
 package com.zss.framaist.entrance
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +21,7 @@ import com.zss.base.recyclerView.BaseNoLeakVPAdapter
 import com.zss.common.net.safeLaunch
 import com.zss.framaist.R
 import com.zss.framaist.common.showNotSupportedDialog
+import com.zss.framaist.compose.component.FaNavigationBarItem
 import com.zss.framaist.databinding.EntranceActivityMainEntranceBinding
 import com.zss.framaist.discover.DiscoverFragment
 import com.zss.framaist.factory.FactoryFragment
@@ -28,16 +30,31 @@ import com.zss.framaist.fram.ui.FramFragment
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.home.HomeFragment
 import com.zss.framaist.mine.UserMineFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>() {
 
-    private var adapterVp: BaseNoLeakVPAdapter? = null
-    val homeFragment by lazy { HomeFragment() }
-    val discoverFragment by lazy { DiscoverFragment() }
-    val framFragment by lazy { FramFragment() }
-    val factoryFragment by lazy { FactoryFragment() }
-    val mineFragment by lazy { UserMineFragment() }
+    @Inject
+    lateinit var adapterVp: BaseNoLeakVPAdapter
+
+    @Inject
+    lateinit var homeFragment: HomeFragment
+
+    @Inject
+    lateinit var discoverFragment: DiscoverFragment
+
+    @Inject
+    lateinit var framFragment: FramFragment
+
+    @Inject
+    lateinit var factoryFragment: FactoryFragment
+
+    @Inject
+    lateinit var mineFragment: UserMineFragment
+
 
     override fun initView() {
         initFragments()
@@ -50,16 +67,15 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
     }
 
     private fun initFragments() {
-        adapterVp = BaseNoLeakVPAdapter(
-            supportFragmentManager,
-            lifecycle
-        ).apply {
-            add { homeFragment }
-            add { discoverFragment }
-            add { framFragment }
-            add { factoryFragment }
-            add { mineFragment }
-        }
+        adapterVp.addAll(
+            listOf(
+                homeFragment,
+                discoverFragment,
+                framFragment,
+                factoryFragment,
+                mineFragment
+            )
+        )
         binding?.vpContent?.setCurrentItem(0, false)
         binding?.vpContent?.apply {
             isUserInputEnabled = false
@@ -153,75 +169,55 @@ class EntranceMainActivity : BaseActivity<EntranceActivityMainEntranceBinding>()
 
 @Composable
 fun SmoothBottomNav(modifier: Modifier = Modifier) {
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    val items = listOf("首页", "发现", "", "工坊", "我的")
+    val iconsRes = listOf(
+        R.drawable.ic_home_gray_9da3ae,
+        R.drawable.ic_search_9da3ae,
+        R.drawable.ic_camera_blue,
+        R.drawable.ic_factory_gray_9da3ae,
+        R.drawable.ic_mine_gray_9da3ae
+    )
+    val selectedIconsRes = listOf(
+        R.drawable.ic_home_blue,
+        R.drawable.ic_search_blue,
+        R.drawable.ic_camera_blue,
+        R.drawable.ic_factory_blue,
+        R.drawable.ic_mine_blue
+    )
     NavigationBar(
         containerColor = colorResource(com.zss.base.R.color.black_2d),
         modifier = modifier
     ) {
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painterResource(R.drawable.ic_home_blue), null, modifier = Modifier.width(24.dp)
-                )
-            },
-            selected = true,
-            label = {
-                Text(
-                    text = "首页",
-                    color = Color.White
-                )
-            },
-            onClick = {},
-            modifier = Modifier.background(color = colorResource(com.zss.base.R.color.black_2d))
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(painterResource(R.drawable.ic_home_blue), null)
-            },
-            selected = true,
-            label = {
-                Text(
-                    text = "发现"
-                )
-            },
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(painterResource(R.drawable.ic_home_blue), null)
-            },
-            selected = true,
-            label = null,
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(painterResource(R.drawable.ic_home_blue), null)
-            },
-            selected = true,
-            label = {
-                Text(
-                    text = "工坊"
-                )
-            },
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = {
-                Icon(painterResource(R.drawable.ic_home_blue), null)
-            },
-            selected = true,
-            label = {
-                Text(
-                    text = "我的"
-                )
-            },
-            onClick = {}
-        )
+        items.forEachIndexed { index, string ->
+            FaNavigationBarItem(
+                index = index,
+                icon = {
+                    Icon(
+                        painter = painterResource(iconsRes[index]),
+                        contentDescription = null,
+                        modifier = Modifier.width(24.dp)
+                    )
+                },
+                selectedIcon = {
+                    Icon(
+                        painter = painterResource(selectedIconsRes[index]),
+                        contentDescription = null,
+                        modifier = Modifier.width(24.dp)
+                    )
+                },
+                label = { Text(string) },
+                selected = selectedItem == index,
+                onClick = {
+
+                },
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 fun NavPreview(modifier: Modifier = Modifier) {
-    SmoothBottomNav()
+    SmoothBottomNav(modifier)
 }
