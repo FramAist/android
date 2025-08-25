@@ -1,9 +1,10 @@
 package com.zss.common.net
 
 
+import com.tencent.mmkv.MMKV
 import com.zss.base.util.LL
+import com.zss.common.constant.MMKVConstants
 import com.zss.common.net.interceptor.HttpInfoCatchInterceptor
-import com.zss.common.util.MMKVUtil
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -31,7 +32,10 @@ object GlobalOkHttpClient {
         Interceptor { chain ->
             try {
                 val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${MMKVUtil.getToken()}")
+                    .addHeader(
+                        "Authorization",
+                        "Bearer ${MMKV.defaultMMKV().decodeString(MMKVConstants.TOKEN)}"
+                    )
                     .addHeader("Content-Type", "application/json;charset=utf-8")
                     .build()
                 chain.proceed(request)

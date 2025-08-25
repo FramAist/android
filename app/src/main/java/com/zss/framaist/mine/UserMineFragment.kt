@@ -21,12 +21,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.zss.common.bean.UserInfoBean
-import com.zss.common.util.MMKVUtil
 import com.zss.framaist.R
 import com.zss.framaist.compose.MoreMessageCard
 import com.zss.framaist.compose.RecentComposeList
@@ -46,6 +52,8 @@ import com.zss.framaist.compose.UserInfoCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
+import com.zss.framaist.mine.settings.SettingDialog
+import com.zss.framaist.util.MMKVUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -153,7 +161,7 @@ fun RecentComposeTitleCard(onClick: () -> Unit) {
 
 
 @Composable
-fun ItemCardBlock2(onLogout: () -> Unit) {
+fun ItemCardBlock2(onLogout: () -> Unit, showSettingDialog: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(top = 12.dp)
@@ -168,7 +176,9 @@ fun ItemCardBlock2(onLogout: () -> Unit) {
                 imageRes = R.drawable.ic_setting,
                 imageBg = 0xfff3f4f6,
             )
-        )
+        ) {
+            showSettingDialog()
+        }
         LineCard()
         ItemCard(
             ItemInfo(
@@ -208,7 +218,31 @@ fun VersionCard() {
 
 @Composable
 fun MyScreen(userInfo: UserInfoBean?) {
+    var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
+    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
+    val activity = LocalActivity.current
+    val uriHandler = LocalUriHandler.current
+
     FramAistTheme {
+        if (showLogoutDialog) {
+            LogoutConfirmDialog(
+                onConfirm = {
+                    activity?.navTo<LoginActivity>()
+                    activity?.finish()
+                    MMKVUtil.logout()
+                },
+                onDismiss = {
+                    showLogoutDialog = false
+                }
+            )
+        }
+
+        if (showSettingsDialog) {
+            SettingDialog(onConfirm = {
+                showSettingsDialog = false
+            })
+        }
+
         Column(
             modifier = Modifier
                 .background(Color.Black)
@@ -217,7 +251,6 @@ fun MyScreen(userInfo: UserInfoBean?) {
                 .padding(horizontal = 26.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            val activity = LocalActivity.current
             TitleCard("我的")
             UserInfoCard(userInfo) {
                 activity?.navTo<UserInfoActivity>()
@@ -226,11 +259,10 @@ fun MyScreen(userInfo: UserInfoBean?) {
             RecentComposeTitleCard {
                 activity?.navTo<RecentListActivity>()
             }
-            ItemCardBlock2 {
-                activity?.navTo<LoginActivity>()
-                activity?.finish()
-                MMKVUtil.logout()
-            }
+            ItemCardBlock2(
+                onLogout = { showLogoutDialog = true },
+                showSettingDialog = { showSettingsDialog = true }
+            )
             VersionCard()
         }
     }
@@ -240,6 +272,45 @@ fun MyScreen(userInfo: UserInfoBean?) {
 @Composable
 fun UserInfoPreview() {
     MoreMessageCard("111") {}
+    LogoutConfirmDialog({}, {})
+}
+
+@Composable
+fun LogoutConfirmDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    AlertDialog(
+        text = {
+            Text(
+                text = "确定要退出登录吗?",
+                fontSize = 18.sp,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+            )
+        },
+        onDismissRequest = onDismiss,
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = "取消",
+                    color = Color.Black
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = "确定",
+                    color = Color.Black
+                )
+            }
+        },
+        containerColor = Color.White,
+        shape = RoundedCornerShape(12.dp)
+    )
 }
 
 data class ItemInfo(

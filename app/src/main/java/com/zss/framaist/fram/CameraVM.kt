@@ -12,7 +12,7 @@ import com.zss.base.mvvm.launch
 import com.zss.base.util.LL
 import com.zss.common.net.getOrNull
 import com.zss.common.net.toRequestBody
-import com.zss.common.util.MMKVUtil
+import com.zss.framaist.util.MMKVUtil
 import com.zss.framaist.bean.LightMode
 import com.zss.framaist.bean.RecommendModel
 import com.zss.framaist.bean.SuggestionResp

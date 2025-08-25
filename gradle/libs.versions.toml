@@ -9,6 +9,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
 viewModelCompose = "2.9.2"
+androidxDataStore = "1.1.1"
 composeBom = "2025.08.00"
 appcompat = "1.7.1"
 material = "1.12.0"
@@ -17,6 +18,7 @@ material = "1.12.0"
 constraintlayout = "2.2.1"
 navigationCompose = "2.9.3"
 coilCompose = "2.7.0"
+androidxHiltNavigationCompose = "1.2.0"
 viewmodel-ktx = "2.9.2"
 camera = "1.4.2"
 
@@ -61,6 +63,8 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "viewModelCompose" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

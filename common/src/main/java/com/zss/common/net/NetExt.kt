@@ -5,11 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ActivityUtils
 import com.zss.base.util.LL
-import com.zss.base.util.toJson
 import com.zss.base.util.toast
-import com.zss.common.constant.MMKVConstants
-import com.zss.common.net.RefreshTokenUtil.refreshToken
-import com.zss.common.util.MMKVUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -76,16 +72,16 @@ fun CoroutineScope.safeLaunch(
                     )
                 )
                 return@launch
-                val res = refreshToken(this)
-                if (res != null) {
-                    MMKVUtil.kv.encode(MMKVConstants.REFRESH_TOKEN, res.refresh_token)
-                    MMKVUtil.kv.encode(MMKVConstants.TOKEN, res.access_token)
-                    LL.e("xdd ${res.toJson()}")
-                    block()
-                    return@launch
-                } else {
-                    toast("刷新了token")
-                }
+//                val res = refreshToken(this)
+//                if (res != null) {
+//                    MMKV.defaultMMKV().encode(MMKVConstants.REFRESH_TOKEN, res.refresh_token)
+//                    MMKV.defaultMMKV().encode(MMKVConstants.TOKEN, res.access_token)
+//                    LL.e("xdd ${res.toJson()}")
+//                    block()
+//                    return@launch
+//                } else {
+//                    toast("刷新了token")
+//                }
             }
             onError(e)
             toastErr(e, showDefaultToast)

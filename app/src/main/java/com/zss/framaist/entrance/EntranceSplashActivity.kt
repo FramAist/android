@@ -2,7 +2,7 @@ package com.zss.framaist.entrance
 
 import android.annotation.SuppressLint
 import com.zss.base.BaseActivity
-import com.zss.common.util.MMKVUtil
+import com.zss.framaist.util.MMKVUtil
 import com.zss.framaist.databinding.ActivitySplashBinding
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity

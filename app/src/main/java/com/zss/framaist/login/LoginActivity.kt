@@ -13,7 +13,7 @@ import com.zss.base.BaseActivity
 import com.zss.base.util.collectResumed
 import com.zss.base.util.setOnSingleClickedListener
 import com.zss.common.net.safeLaunch
-import com.zss.common.util.MMKVUtil
+import com.zss.framaist.util.MMKVUtil
 import com.zss.framaist.R
 import com.zss.framaist.common.showNotSupportedDialog
 import com.zss.framaist.databinding.ActivityLoginBinding
