@@ -2,131 +2,101 @@ package com.zss.framaist.login
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import com.zss.base.mvvm.BaseVM
+import androidx.lifecycle.ViewModel
+import com.blankj.utilcode.util.ToastUtils
 import com.zss.base.mvvm.launch
 import com.zss.common.bean.LoginResp
-import com.zss.common.net.getOrNull
-import com.zss.common.net.toRequestBody
-import com.zss.framaist.net.GlobalApiManager
+import com.zss.framaist.util.MMKVUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
-import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
-
-const val MODE_PSW = 0
-const val MODE_PHONE = 1
 
 /**
  * 接口少,直接略过repo层,不涉及UI的接口直接使用回调
  */
 @HiltViewModel
-class LoginVM @Inject constructor() : BaseVM<LoginRepo>() {
+class LoginVM @Inject constructor(
+    private val repo: LoginRepo
+) : ViewModel() {
 
-    private val api = GlobalApiManager.userApiService
+    private val _loginResult: MutableStateFlow<LoginResp?> = MutableStateFlow(null)
+    val loginResult: StateFlow<LoginResp?> = _loginResult.asStateFlow()
 
-    private val _searchResult: MutableStateFlow<Int> = MutableStateFlow(0)
-    val searchResult = _searchResult.asStateFlow()
+    private val _showNotSupport: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    val showNotSupport: SharedFlow<Boolean> = _showNotSupport.asSharedFlow()
 
-
-    private val _loginMode: MutableStateFlow<Int> = MutableStateFlow(MODE_PSW)
-    val loginMode = _loginMode.asStateFlow()
-
+    private val _loginSate = mutableStateOf(LoginState())
+    val loginSate: State<LoginState> = _loginSate
 
     private val _modifyPswState = mutableStateOf(PasswordChangeState())
     val modifyPswState: State<PasswordChangeState> = _modifyPswState
-
-    fun setLoginMode(mode: Int) {
-        _loginMode.value = mode
-    }
 
     fun clearModifyState() {
         _modifyPswState.value = PasswordChangeState()
     }
 
-
-    suspend fun checkWhiteList(phone: String) = suspendCancellableCoroutine<Boolean> { con ->
-        launch({
-            val jb = JSONObject().apply {
-                put("phone", phone)
+    fun onEvent(loginEvent: LoginEvent) {
+        when (loginEvent) {
+            is LoginEvent.TabSelected -> {
+                _loginSate.value = _loginSate.value.copy(
+                    selectedTab = loginEvent.index,
+                    password = ""
+                )
             }
-            delay(1000)
-            con.resume(true)
-//            val res = api.checkWhiteList(jb.toRequestBody()).getOrNull()
-//            requireNotNull(res)
-//            con.resume(res)
-        }, {
-            con.resumeWithException(Throwable(it))
-        })
-    }
 
-    suspend fun getVerifyCode(phone: String) = suspendCancellableCoroutine<Boolean> { con ->
-        launch({
-            val jb = JSONObject().apply {
-                put("phone", phone)
+            is LoginEvent.AccountChanged -> {
+                _loginSate.value = _loginSate.value.copy(
+                    account = loginEvent.value
+                )
             }
-            delay(100)
-            con.resume(true)
-            /*val res = api.getVerifyCode(jb.toRequestBody()).getOrNull()
-            requireNotNull(res)
-            con.resume(res)*/
-        }, {
-            con.resumeWithException(Throwable(it))
-        })
-    }
 
-    /**
-     * [isPsw]:true账号密码,false验证码.
-     */
-    suspend fun login(phone: String, psw: String, isPsw: Boolean = true) =
-        suspendCoroutine<LoginResp> { con ->
-            launch({
-                val jb = JSONObject().apply {
-                    if (isPsw) {
-                        put("email", phone)
-                        put("password", psw)
-                    } else {
-                        put("phone", phone)
-                        put("verify", psw)
-                    }
-                }
-                val res = api.login(jb.toRequestBody()).getOrNull()
-                requireNotNull(res) { "登录失败!" }
-                con.resume(res)
-            }, { con.resumeWithException(Throwable(it)) })
+            is LoginEvent.PasswordChanged -> {
+                _loginSate.value = _loginSate.value.copy(
+                    password = loginEvent.value
+                )
+            }
+
+            LoginEvent.GetVerifyCode -> {
+                launch({
+                    _showNotSupport.emit(true)
+                })
+            }
+
+            LoginEvent.HandleLogin -> {
+                loginD()
+            }
         }
+    }
 
-    suspend fun modifyPsw(old: String, new: String) = suspendCancellableCoroutine<Boolean> { con ->
+    fun loginD() {
         launch({
-            _modifyPswState.value = _modifyPswState.value.copy(isLoading = true)
-            val jb = JSONObject().apply {
-                put("old_password", old)
-                put("new_password", new)
+            val phone = _loginSate.value.account
+            val psw = _loginSate.value.password
+            val isPsw = _loginSate.value.selectedTab == 0
+            require(phone.isNotEmpty()) { "账号不能为空" }
+            require(psw.isNotEmpty()) {
+                if (isPsw) {
+                    "密码不能为空"
+                } else {
+                    "验证码不能为空"
+                }
             }
-            api.modifyPsw(jb.toRequestBody()).getOrNull()
-            _modifyPswState.value =
-                _modifyPswState.value.copy(success = true, message = "密码修改成功")
-            con.resume(true)
+            repo.loginRemote(phone, psw, isPsw)
         }, {
-            _modifyPswState.value =
-                _modifyPswState.value.copy(success = false, error = it)
-            con.resumeWithException(Throwable(it))
+            ToastUtils.showShort(it)
         })
+
     }
 
     fun modifyPswCompose(oldPsw: String, newPsw: String) {
         launch({
             _modifyPswState.value = _modifyPswState.value.copy(isLoading = true)
-            val jb = JSONObject().apply {
-                put("old_password", oldPsw)
-                put("new_password", newPsw)
-            }
-            api.modifyPsw(jb.toRequestBody()).getOrNull()
+            repo.modifyPswRemote(oldPsw, newPsw)
             _modifyPswState.value =
                 _modifyPswState.value.copy(success = true, message = "密码修改成功")
         }, {
@@ -134,21 +104,26 @@ class LoginVM @Inject constructor() : BaseVM<LoginRepo>() {
                 _modifyPswState.value.copy(success = false, error = it)
         })
     }
-
-
-    /**
-     * 注册,暂未有入口
-     */
-    fun register(account: String, email: String, psw: String) {
-
-    }
-
 }
 
-// 状态数据类
 data class PasswordChangeState(
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val error: String? = null,
     val message: String? = null
 )
+
+data class LoginState(
+    val selectedTab: Int = 0,
+    val account: String = MMKVUtil.getLastLoginAccount() ?: "",
+    val password: String = "",
+    val titles: List<String> = listOf("密码登录", "验证码登录")
+)
+
+sealed interface LoginEvent {
+    data class TabSelected(val index: Int) : LoginEvent
+    data class AccountChanged(val value: String) : LoginEvent
+    data class PasswordChanged(val value: String) : LoginEvent
+    data object GetVerifyCode : LoginEvent
+    data object HandleLogin : LoginEvent
+}

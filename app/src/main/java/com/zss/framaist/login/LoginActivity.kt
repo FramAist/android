@@ -1,159 +1,275 @@
 package com.zss.framaist.login
 
 import android.content.Intent
-import android.os.CountDownTimer
-import android.text.InputType
-import android.text.method.PasswordTransformationMethod
-import android.view.ViewGroup
-import androidx.activity.viewModels
-import androidx.core.view.isGone
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
-import com.zss.base.BaseActivity
-import com.zss.base.util.collectResumed
-import com.zss.base.util.setOnSingleClickedListener
-import com.zss.common.net.safeLaunch
-import com.zss.framaist.util.MMKVUtil
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zss.framaist.R
 import com.zss.framaist.common.showNotSupportedDialog
-import com.zss.framaist.databinding.ActivityLoginBinding
+import com.zss.framaist.compose.BaseComposeActivity
+import com.zss.framaist.compose.ConfirmButton
+import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.entrance.EntranceMainActivity
+import com.zss.framaist.util.MMKVUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class LoginActivity : BaseActivity<ActivityLoginBinding>() {
-    val vm: LoginVM by viewModels()
-    var mCountDownTimer: CountDownTimer? = null
+class LoginActivity : BaseComposeActivity() {
 
-    override fun bindingEvent() {
-        super.bindingEvent()
-        binding?.apply {
-            tvForget.setOnClickListener {
-                showNotSupportedDialog(this@LoginActivity)
-            }
-            tvPswLoginTab.setOnClickListener {
-                vm.setLoginMode(MODE_PSW)
-            }
-            tvCodeLoginTap.setOnClickListener {
-                vm.setLoginMode(MODE_PHONE)
-            }
-            ivPswMark.setOnClickListener {
-                val isHide = etPsw.transformationMethod is PasswordTransformationMethod
-                if (isHide) {
-                    // 显示密码
-                    etPsw.inputType =
-                        InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or InputType.TYPE_CLASS_TEXT
-                    etPsw.transformationMethod = null
-                    ivPswMark.setImageResource(R.drawable.login_login_eye_open)
-                } else {
-                    // 隐藏密码
-                    etPsw.inputType =
-                        InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
-                    etPsw.transformationMethod = PasswordTransformationMethod.getInstance()
-                    ivPswMark.setImageResource(R.drawable.login_login_eye_close)
-                }
-                // 移动光标到末尾
-                etPsw.text?.length?.let { etPsw.setSelection(it) }
-            }
-            tvGetVerifyCode.setOnSingleClickedListener {
-                showNotSupportedDialog(this@LoginActivity)
-                return@setOnSingleClickedListener
-                // 暂不支持
-//                if (tvGetVerifyCode.text.toString() != "获取验证码") return@setOnSingleClickedListener
-//                val phone = etAccount.text.toString()
-//                safeLaunch {
-//                    require(phone.isNotEmpty()) { "手机号码不能为空!" }
-//                    val isInWhiteList = vm.checkWhiteList(phone)
-//                    if (isInWhiteList) {
-//                        val verifyRes = vm.getVerifyCode(phone)
-//                        if (verifyRes) {
-//                            toast("发送成功!")
-//                            startCountDown()
-//                        }
-//                    }
-//                    showWhiteListTips(!isInWhiteList)
-//                }
-            }
-            tvLogin.setOnSingleClickedListener {
-                val account = etAccount.text.toString()
-                val psw = etPsw.text.toString()
-                safeLaunch(onError = {
-                    dismissLoading()
-                }) {
-                    require(account.isNotEmpty()) { "请输入${etAccount.hint}" }
-                    require(psw.isNotEmpty()) { "请输入${etPsw.hint}!" }
-                    showLoading()
-                    val res = vm.login(account, psw)
-                    MMKVUtil.setUserInfo(res)
+    @Composable
+    override fun SetScreen() {
+        LoginScreen()
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun LoginScreen(vm: LoginVM = hiltViewModel()) {
+        FramAistTheme {
+            val loginResult by vm.loginResult.collectAsStateWithLifecycle()
+            val loginState by vm.loginSate
+            val showNotSupport by vm.showNotSupport.collectAsStateWithLifecycle(false)
+            val context = LocalContext.current
+            LaunchedEffect(loginResult, showNotSupport) {
+                if (loginResult != null) {
+                    MMKVUtil.setUserInfo(loginResult!!)
                     startActivity(Intent(this@LoginActivity, EntranceMainActivity::class.java))
                     finish()
                 }
+                if (showNotSupport) {
+                    showNotSupportedDialog(context)
+                }
             }
+            LoginPanel(loginState = loginState, onEvent = vm::onEvent)
         }
     }
 
-    override fun observe() {
-        super.observe()
-        vm.loginMode.collectResumed(this) { position ->
-            binding?.apply {
-                if (position == 0) {
-                    showWhiteListTips(false)
-                }
-                val lastLoginAccount = MMKVUtil.getLastLoginAccount()
-                if (!lastLoginAccount.isNullOrEmpty()) {
-                    etAccount.setText(lastLoginAccount)
-                }
-                etAccount.hint = if (position == 0) "账号" else "手机号"
-                etPsw.hint = if (position == 0) "密码" else "验证码"
-                ivPswMark.isVisible = position == 0
-                tvPswLoginTab.isSelected = position == 0
-                tvCodeLoginTap.isSelected = position == 1
-                indicator0.isSelected = position == 0
-                indicator1.isSelected = position == 1
-                tvGetVerifyCode.isGone = position == 0
-                groupForgetPsw.isInvisible = position == 1
-                val lp0 = indicator0.layoutParams as ViewGroup.LayoutParams
-                lp0.height = if (position == 0) 8 else 2
-                indicator0.layoutParams = lp0
-                val lp1 = indicator1.layoutParams as ViewGroup.LayoutParams
-                lp1.height = if (position == 1) 8 else 2
-                indicator1.layoutParams = lp1
-                indicator0.shapeDrawableBuilder.apply {
-                    solidColor =
-                        if (position == 0) getColor(com.zss.base.R.color.blue_375af6) else getColor(
-                            com.zss.base.R.color.gray_394150
+    @Composable
+    fun LoginTabs(
+        selectedIndex: Int,
+        titles: List<String>,
+        onTabSelect: (index: Int) -> Unit,
+        modifier: Modifier = Modifier,
+    ) {
+        TabRow(
+            selectedTabIndex = selectedIndex,
+            containerColor = Color.Transparent,
+            contentColor = Color.Transparent,
+            indicator = { positions ->
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(positions[selectedIndex]),
+                    height = 2.dp,
+                    color = colorResource(com.zss.base.R.color.blue_2a5bff)
+                )
+            },
+            tabs = {
+                titles.forEachIndexed { index, title ->
+                    val isSelected = index == selectedIndex
+                    val color =
+                        if (isSelected) colorResource(com.zss.base.R.color.blue_2a5bff) else colorResource(
+                            com.zss.base.R.color.gray_9da3ae
                         )
-                    intoBackground()
+                    Tab(
+                        selected = isSelected,
+                        onClick = {
+                            onTabSelect(index)
+                        },
+                        modifier = modifier,
+                        enabled = true,
+                        text = {
+                            Box() {
+                                Text(
+                                    text = title,
+                                    color = color,
+                                    fontSize = 18.sp
+                                )
+                            }
+                        },
+                    )
                 }
-                indicator1.shapeDrawableBuilder.apply {
-                    solidColor =
-                        if (position == 1) getColor(com.zss.base.R.color.blue_375af6) else getColor(
-                            com.zss.base.R.color.gray_394150
+            }
+        )
+    }
+
+    @Composable
+    fun LoginInputCard(
+        hint: String,
+        value: String,
+        onValueChange: (String) -> Unit,
+        iconRes: Int,
+        modifier: Modifier = Modifier,
+        isPassword: Boolean = false,
+        keyboardType: KeyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text // 更灵活的参数
+    ) {
+        var textVisible by remember { mutableStateOf(!isPassword) }
+        Column {
+            TextField(
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = {
+                    Text(
+                        text = hint,
+                        color = colorResource(com.zss.base.R.color.gray_9da3ae),
+                        modifier = Modifier.fillMaxSize()
+                    )
+                },
+                singleLine = true,
+                visualTransformation = if (textVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                shape = RoundedCornerShape(12.dp), // 文本框本身的形状
+                enabled = true,
+                leadingIcon = {
+                    Icon(
+                        painterResource(iconRes),
+                        null,
+                        tint = colorResource(com.zss.base.R.color.gray_9da3ae),
+                        modifier = Modifier
+                            .width(24.dp)
+                            .height(24.dp)
+                    )
+                },
+                trailingIcon = {
+                    if (isPassword) {
+                        Icon(
+                            painterResource(if (textVisible) R.drawable.login_login_eye_close else R.drawable.login_login_eye_open),
+                            null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable(onClick = {
+                                    textVisible = !textVisible
+                                })
                         )
-                    intoBackground()
+                    } else {
+                        null
+                    }
+                },
+                colors = TextFieldDefaults.colors(
+                    unfocusedTextColor = colorResource(com.zss.base.R.color.gray_9da3ae),
+                    focusedTextColor = colorResource(com.zss.base.R.color.gray_9da3ae),
+                    focusedContainerColor = Color(0xff303030),
+                    unfocusedContainerColor = Color(0xff303030),
+                    focusedIndicatorColor = Color.Transparent, // 隐藏底部指示线
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(
+                    fontSize = 18.sp
+                ),
+                modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxWidth()
+            )
+        }
+    }
+
+    @Composable
+    fun LoginPanel(
+        loginState: LoginState,
+        onEvent: (LoginEvent) -> Unit,
+        modifier: Modifier = Modifier,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "欢迎使用 FramAist",
+                color = Color.White,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+            LoginTabs(loginState.selectedTab, loginState.titles, {
+                onEvent(LoginEvent.TabSelected(it))
+            })
+            Spacer(modifier = Modifier.padding(top = 24.dp))
+            LoginInputCard(
+                "请输入账号",
+                loginState.account,
+                onValueChange = {
+                    onEvent(LoginEvent.AccountChanged(it))
+                },
+                iconRes = R.drawable.outline_call_24
+            )
+            Spacer(modifier = Modifier.padding(top = 24.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                LoginInputCard(
+                    "请输入密码",
+                    loginState.password,
+                    onValueChange = {
+                        onEvent(LoginEvent.PasswordChanged(it))
+                    },
+                    iconRes = R.drawable.ic_lock_grey,
+                    isPassword = true
+                )
+                if (loginState.selectedTab == 1) {
+                    TextButton(onClick = {
+                        onEvent(LoginEvent.GetVerifyCode)
+                    }) {
+                        Text(
+                            "获取验证码",
+                            color = colorResource(com.zss.base.R.color.blue_2a5bff),
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            ConfirmButton("登录", {
+                onEvent(LoginEvent.HandleLogin)
+            })
         }
     }
 
-    private fun showWhiteListTips(isShow: Boolean) {
-        binding?.groupWhiteListTips?.isVisible = isShow
+    @Preview
+    @Composable
+    private fun LoginPreview() {
+        LoginScreen()
     }
-
-    private fun startCountDown() {
-        mCountDownTimer?.cancel()
-        val tvTime = binding?.tvGetVerifyCode ?: return
-        mCountDownTimer = object : CountDownTimer(10_000, 1000) {
-            override fun onTick(p0: Long) {
-                tvTime.text = (p0 / 1000.00).roundToInt().toString()
-            }
-
-            override fun onFinish() {
-                tvTime.text = "获取验证码"
-            }
-        }
-        mCountDownTimer?.start()
-    }
-
 }

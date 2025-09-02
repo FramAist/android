@@ -1,7 +1,11 @@
 package com.zss.framaist.mine.settings
 
+import android.R.attr.fontWeight
+import android.widget.Space
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -13,7 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -40,15 +49,21 @@ fun SettingDialog(
 ) {
 
     AlertDialog(
-        onDismissRequest = {
-            onConfirm
-        },
+        onDismissRequest = onConfirm,
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text("确定")
             }
         },
         text = {
+            Text(
+                text = "设置",
+                modifier = Modifier.wrapContentSize().padding(bottom = 20.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
             HorizontalDivider()
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 when (settingsUiState) {
