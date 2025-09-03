@@ -1,9 +1,5 @@
 package com.zss.framaist.home
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,37 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
 import com.zss.framaist.compose.MoreMessageCard
 import com.zss.framaist.compose.TitleCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.CameraActivity
 import com.zss.framaist.fram.ui.navTo
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-
-
-@AndroidEntryPoint
-class HomeFragment @Inject constructor() : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return ComposeView(requireActivity()).apply {
-            setContent {
-                HomeScreen()
-            }
-        }
-    }
-}
 
 @Composable
 fun HomeScreen() {
@@ -60,6 +35,7 @@ fun HomeScreen() {
         val activity = LocalActivity.current
         Column(
             modifier = Modifier
+                .background(Color.Black)
                 .fillMaxSize()
                 .padding(horizontal = 26.dp)
         ) {

@@ -86,7 +86,7 @@ class LoginVM @Inject constructor(
                     "验证码不能为空"
                 }
             }
-            repo.loginRemote(phone, psw, isPsw)
+            _loginResult.value = repo.loginRemote(phone, psw, isPsw)
         }, {
             ToastUtils.showShort(it)
         })

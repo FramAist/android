@@ -101,8 +101,7 @@ fun NetWorkImage(url: String, modifier: Modifier = Modifier) {
 
 
 @Composable
-fun RecentComposeList(vm: MineVM = viewModel()) {
-    val list by vm.recentList.collectAsStateWithLifecycle(listOf())
+fun RecentComposeList(list:List<ConfirmedSuggestionResp>) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)

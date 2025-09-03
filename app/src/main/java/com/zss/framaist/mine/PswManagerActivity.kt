@@ -36,7 +36,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zss.base.util.toast
 import com.zss.common.constant.IntentKey
 import com.zss.framaist.R
@@ -46,22 +46,24 @@ import com.zss.framaist.compose.ConfirmButton
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginVM
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PswManagerActivity : BaseComposeActivity() {
-
     @Composable
     override fun SetScreen() {
-        MyScreen()
+        PswManagerScreen()
     }
 }
 
 @Composable
-fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = viewModel()) {
+fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = hiltViewModel()) {
 
     var currentPsw by remember { mutableStateOf("") }
     var newPsw by remember { mutableStateOf("") }
     var confirmPsw by remember { mutableStateOf("") }
-    val state = vm.modifyPswState.value
+    val state by vm.modifyPswState
     val activity = LocalActivity.current
 
     LaunchedEffect(state.success, state.error) {
@@ -190,11 +192,11 @@ fun InputCard(
 @Preview(showBackground = true)
 @Composable
 fun InfoCardPreview() {
-    MyScreen()
+    PswManagerScreen()
 }
 
 @Composable
-fun MyScreen(modifier: Modifier = Modifier) {
+fun PswManagerScreen(modifier: Modifier = Modifier) {
     FramAistTheme {
         val activity = LocalActivity.current
         Column(

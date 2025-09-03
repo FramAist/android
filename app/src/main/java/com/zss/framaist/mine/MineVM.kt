@@ -1,19 +1,22 @@
 package com.zss.framaist.mine
 
-import com.zss.base.mvvm.BaseVM
+import androidx.lifecycle.ViewModel
 import com.zss.base.mvvm.launch
 import com.zss.common.net.getOrNull
 import com.zss.framaist.bean.ConfirmedSuggestionResp
 import com.zss.framaist.net.GlobalApiManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 
 /**
  * 接口少,直接略过repo层,不涉及UI的接口直接使用回调
  */
-class MineVM : BaseVM<MineRepo>() {
+@HiltViewModel
+class MineVM @Inject constructor() : ViewModel() {
 
     private val api = GlobalApiManager.composeApiService
 

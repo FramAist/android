@@ -1,9 +1,5 @@
 package com.zss.framaist.mine
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +21,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,18 +29,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.zss.common.bean.UserInfoBean
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zss.framaist.R
+import com.zss.framaist.bean.ConfirmedSuggestionResp
 import com.zss.framaist.compose.MoreMessageCard
 import com.zss.framaist.compose.RecentComposeList
 import com.zss.framaist.compose.RecentListActivity
@@ -54,28 +49,6 @@ import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginActivity
 import com.zss.framaist.mine.settings.SettingDialog
 import com.zss.framaist.util.MMKVUtil
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-
-@AndroidEntryPoint
-class UserMineFragment @Inject constructor() : Fragment() {
-
-    private val vm: MineVM by viewModels()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        vm.getRecentCompose()
-        return ComposeView(requireActivity()).apply {
-            setContent {
-                MyScreen(MMKVUtil.getUserInfo())
-            }
-        }
-    }
-
-}
 
 
 @Composable
@@ -152,10 +125,10 @@ fun ItemCardBlock() {
 }
 
 @Composable
-fun RecentComposeTitleCard(onClick: () -> Unit) {
+fun RecentComposeTitleCard(items: List<ConfirmedSuggestionResp>, onClick: () -> Unit) {
     Column {
         MoreMessageCard("最近构图", onClick)
-        RecentComposeList()
+        RecentComposeList(items)
     }
 }
 
@@ -217,11 +190,16 @@ fun VersionCard() {
 }
 
 @Composable
-fun MyScreen(userInfo: UserInfoBean?) {
+fun MineScreen(vm: MineVM = hiltViewModel()) {
+    var userInfo by rememberSaveable { mutableStateOf(MMKVUtil.getUserInfo()) }
     var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
+    val recent by vm.recentList.collectAsStateWithLifecycle()
     val activity = LocalActivity.current
-    val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(Unit) {
+        vm.getRecentCompose()
+    }
 
     FramAistTheme {
         if (showLogoutDialog) {
@@ -256,7 +234,7 @@ fun MyScreen(userInfo: UserInfoBean?) {
                 activity?.navTo<UserInfoActivity>()
             }
             ItemCardBlock()
-            RecentComposeTitleCard {
+            RecentComposeTitleCard(recent) {
                 activity?.navTo<RecentListActivity>()
             }
             ItemCardBlock2(
@@ -271,8 +249,7 @@ fun MyScreen(userInfo: UserInfoBean?) {
 @Preview(showBackground = true)
 @Composable
 fun UserInfoPreview() {
-    MoreMessageCard("111") {}
-    LogoutConfirmDialog({}, {})
+    MineScreen()
 }
 
 @Composable
@@ -281,7 +258,6 @@ fun LogoutConfirmDialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     AlertDialog(
         text = {
             Text(
