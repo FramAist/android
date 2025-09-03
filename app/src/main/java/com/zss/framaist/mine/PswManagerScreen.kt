@@ -46,9 +46,6 @@ import com.zss.framaist.login.LoginVM
 
 @Composable
 fun ModifyPswCard(
-//    curPsw: String,
-//    newPsw: String,
-//    confirmPsw: String,
     onCurChange: (String) -> Unit,
     onNewChange: (String) -> Unit,
     onConfirmChange: (String) -> Unit,
@@ -82,10 +79,7 @@ fun ModifyPswCard(
             onConfirmChange(it)
         })
         Spacer(modifier.height(20.dp))
-        ConfirmButton("确定", {
-            onConfirm()
-
-        })
+        ConfirmButton("确定", onConfirm)
     }
 }
 

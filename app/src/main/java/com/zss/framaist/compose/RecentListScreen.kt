@@ -1,10 +1,5 @@
 package com.zss.framaist.compose
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,29 +36,6 @@ import com.zss.framaist.bean.ConfirmedSuggestionResp
 import com.zss.framaist.compose.ui.theme.FramAistTheme
 import com.zss.framaist.mine.MineVM
 
-class RecentListActivity : ComponentActivity() {
-    private val vm: MineVM by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        vm.getRecentCompose()
-        enableEdgeToEdge()
-        setContent {
-            FramAistTheme {
-                Column(
-                    modifier = Modifier
-                        .background(Color.Black)
-                        .padding(horizontal = 12.dp)
-                ) {
-                    TitleCard("最近构图记录")
-                    RecentComposeGrid(modifier = Modifier)
-                }
-            }
-        }
-    }
-}
-
-
 /**
  * 最近构图
  */
@@ -78,7 +51,6 @@ fun RecentComposeCard(suggestion: ConfirmedSuggestionResp) {
     ) {
         NetWorkImage(url = suggestion.image_url.toString())
     }
-
 }
 
 @Composable
@@ -99,9 +71,29 @@ fun NetWorkImage(url: String, modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+fun RecentFramScreen(vm: MineVM = viewModel()) {
+    FramAistTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.Black)
+                .padding(horizontal = 12.dp)
+        ) {
+            val list by vm.recentList.collectAsStateWithLifecycle(listOf())
+
+            LaunchedEffect(Unit) {
+                vm.getRecentCompose()
+            }
+
+            TitleCard("最近构图记录")
+            RecentComposeGrid(list, modifier = Modifier)
+        }
+    }
+}
+
 
 @Composable
-fun RecentComposeList(list:List<ConfirmedSuggestionResp>) {
+fun RecentComposeList(list: List<ConfirmedSuggestionResp>) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
@@ -113,8 +105,10 @@ fun RecentComposeList(list:List<ConfirmedSuggestionResp>) {
 }
 
 @Composable
-fun RecentComposeGrid(modifier: Modifier = Modifier, vm: MineVM = viewModel()) {
-    val list by vm.recentList.collectAsStateWithLifecycle(listOf())
+fun RecentComposeGrid(
+    list: List<ConfirmedSuggestionResp>,
+    modifier: Modifier = Modifier,
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier

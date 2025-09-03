@@ -41,7 +41,6 @@ import com.zss.framaist.R
 import com.zss.framaist.bean.ConfirmedSuggestionResp
 import com.zss.framaist.compose.MoreMessageCard
 import com.zss.framaist.compose.RecentComposeList
-import com.zss.framaist.compose.RecentListActivity
 import com.zss.framaist.compose.TitleCard
 import com.zss.framaist.compose.UserInfoCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
@@ -190,7 +189,11 @@ fun VersionCard() {
 }
 
 @Composable
-fun MineScreen(vm: MineVM = hiltViewModel(), onUserInfoClick: () -> Unit) {
+fun MineScreen(
+    vm: MineVM = hiltViewModel(),
+    onUserInfoClick: () -> Unit,
+    onRecentListClick: () -> Unit,
+) {
     var userInfo by rememberSaveable { mutableStateOf(MMKVUtil.getUserInfo()) }
     var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
@@ -206,7 +209,6 @@ fun MineScreen(vm: MineVM = hiltViewModel(), onUserInfoClick: () -> Unit) {
             LogoutConfirmDialog(
                 onConfirm = {
                     activity?.navTo<LoginActivity>()
-                    activity?.finish()
                     MMKVUtil.logout()
                 },
                 onDismiss = {
@@ -232,9 +234,7 @@ fun MineScreen(vm: MineVM = hiltViewModel(), onUserInfoClick: () -> Unit) {
             TitleCard("我的")
             UserInfoCard(userInfo, onUserInfoClick)
             ItemCardBlock()
-            RecentComposeTitleCard(recent) {
-                activity?.navTo<RecentListActivity>()
-            }
+            RecentComposeTitleCard(recent, onRecentListClick)
             ItemCardBlock2(
                 onLogout = { showLogoutDialog = true },
                 showSettingDialog = { showSettingsDialog = true }
@@ -247,7 +247,7 @@ fun MineScreen(vm: MineVM = hiltViewModel(), onUserInfoClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun UserInfoPreview() {
-    MineScreen(onUserInfoClick = {})
+    MineScreen(onUserInfoClick = {}, onRecentListClick = {})
 }
 
 @Composable

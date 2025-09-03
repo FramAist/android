@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.zss.framaist.compose.FaAppState
+import com.zss.framaist.compose.RecentFramScreen
 import com.zss.framaist.home.navigation.HomeBaseRoute
 import com.zss.framaist.home.navigation.MineRoute
 import com.zss.framaist.home.navigation.homeSection
@@ -14,6 +15,7 @@ import com.zss.framaist.mine.PswManagerScreen
 import com.zss.framaist.mine.ResultScreen
 import com.zss.framaist.mine.UserInfoScreen
 import com.zss.framaist.mine.navigation.PasswordManagerRoute
+import com.zss.framaist.mine.navigation.RecentListRoute
 import com.zss.framaist.mine.navigation.UserInfoManagerRoute
 import com.zss.framaist.mine.navigation.navigateToUserInfoManager
 
@@ -26,7 +28,12 @@ fun FaNavHost(appState: FaAppState) {
         builder = {
             homeSection()
             composable<MineRoute> {
-                MineScreen(onUserInfoClick = navController::navigateToUserInfoManager)
+                MineScreen(
+                    onUserInfoClick = navController::navigateToUserInfoManager,
+                    onRecentListClick = {
+                        navController.navigate(RecentListRoute)
+                    }
+                )
             }
             composable<UserInfoManagerRoute> {
                 UserInfoScreen(
@@ -53,6 +60,10 @@ fun FaNavHost(appState: FaAppState) {
                 ResultScreen(errReason, {
 
                 }, navController::popBackStack)
+            }
+
+            composable<RecentListRoute> {
+                RecentFramScreen()
             }
 
         }
