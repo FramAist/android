@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.ToastUtils
 import com.zss.base.mvvm.launch
+import com.zss.base.util.LL
 import com.zss.common.bean.LoginResp
 import com.zss.framaist.util.MMKVUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,10 @@ class LoginVM @Inject constructor(
 
     fun clearModifyState() {
         _modifyPswState.value = PasswordChangeState()
+    }
+
+    fun retryModify() {
+        _modifyPswState.value = _modifyPswState.value.copy(shouldNavigate = false)
     }
 
     fun onEvent(loginEvent: LoginEvent) {
@@ -98,10 +103,15 @@ class LoginVM @Inject constructor(
             _modifyPswState.value = _modifyPswState.value.copy(isLoading = true)
             repo.modifyPswRemote(oldPsw, newPsw)
             _modifyPswState.value =
-                _modifyPswState.value.copy(success = true, message = "密码修改成功")
+                _modifyPswState.value.copy(
+                    success = true,
+                    message = "密码修改成功",
+                    shouldNavigate = true
+                )
         }, {
+            LL.e("xdd 密码修改失败 $it")
             _modifyPswState.value =
-                _modifyPswState.value.copy(success = false, error = it)
+                _modifyPswState.value.copy(success = false, error = it, shouldNavigate = true)
         })
     }
 }
@@ -110,7 +120,8 @@ data class PasswordChangeState(
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val error: String? = null,
-    val message: String? = null
+    val message: String? = null,
+    val shouldNavigate: Boolean = false // 是否需要处理导航
 )
 
 data class LoginState(

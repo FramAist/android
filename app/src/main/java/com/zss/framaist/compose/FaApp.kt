@@ -63,9 +63,7 @@ fun FaApp(appState: FaAppState, modifier: Modifier = Modifier) {
                     ),
                 ),
         ) {
-            FaNavHost(
-                appState = appState,
-            )
+            FaNavHost(appState = appState)
         }
     }
 }

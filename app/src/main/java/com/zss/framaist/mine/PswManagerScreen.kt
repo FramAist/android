@@ -1,6 +1,5 @@
 package com.zss.framaist.mine
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,56 +36,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.zss.base.util.LL
 import com.zss.base.util.toast
-import com.zss.common.constant.IntentKey
 import com.zss.framaist.R
 import com.zss.framaist.compose.BackTitleCard
-import com.zss.framaist.compose.BaseComposeActivity
 import com.zss.framaist.compose.ConfirmButton
 import com.zss.framaist.compose.ui.theme.FramAistTheme
-import com.zss.framaist.fram.ui.navTo
 import com.zss.framaist.login.LoginVM
-import dagger.hilt.EntryPoint
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class PswManagerActivity : BaseComposeActivity() {
-    @Composable
-    override fun SetScreen() {
-        PswManagerScreen()
-    }
-}
 
 @Composable
-fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = hiltViewModel()) {
-
-    var currentPsw by remember { mutableStateOf("") }
-    var newPsw by remember { mutableStateOf("") }
-    var confirmPsw by remember { mutableStateOf("") }
-    val state by vm.modifyPswState
-    val activity = LocalActivity.current
-
-    LaunchedEffect(state.success, state.error) {
-        when {
-            state.success -> {
-                activity?.finish()
-                currentPsw = ""
-                newPsw = ""
-                confirmPsw = ""
-                activity?.navTo<PswModifyResultActivity> { intent ->
-                    intent.putExtra(IntentKey.ERROR_REASON, "")
-                }
-            }
-
-            state.error != null -> {
-                vm.clearModifyState()
-                activity?.navTo<PswModifyResultActivity> { intent ->
-                    intent.putExtra(IntentKey.ERROR_REASON, state.error)
-                }
-            }
-        }
-    }
-
+fun ModifyPswCard(
+//    curPsw: String,
+//    newPsw: String,
+//    confirmPsw: String,
+    onCurChange: (String) -> Unit,
+    onNewChange: (String) -> Unit,
+    onConfirmChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
+    navToResult: (String) -> Unit
+) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
@@ -96,11 +65,11 @@ fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = hiltViewModel()) {
             .wrapContentHeight()
     ) {
         InputCard("当前密码", hint = "请输入当前密码", onValueChange = {
-            currentPsw = it
+            onCurChange(it)
         }, modifier)
         Spacer(modifier.height(10.dp))
         InputCard("新密码", hint = "请输入新密码", onValueChange = {
-            newPsw = it
+            onNewChange(it)
         })
         Spacer(modifier.height(8.dp))
         Text(
@@ -110,13 +79,12 @@ fun InfoCard(modifier: Modifier = Modifier, vm: LoginVM = hiltViewModel()) {
         )
         Spacer(modifier.height(16.dp))
         InputCard("确认新密码", hint = "请再次输入新密码", onValueChange = {
-            confirmPsw = it
+            onConfirmChange(it)
         })
         Spacer(modifier.height(20.dp))
         ConfirmButton("确定", {
-            if (checkPsw(currentPsw, newPsw, confirmPsw)) {
-                vm.modifyPswCompose(currentPsw, newPsw)
-            }
+            onConfirm()
+
         })
     }
 }
@@ -192,23 +160,57 @@ fun InputCard(
 @Preview(showBackground = true)
 @Composable
 fun InfoCardPreview() {
-    PswManagerScreen()
+    PswManagerScreen(onPopBack = { true }, navToResult = {})
 }
 
 @Composable
-fun PswManagerScreen(modifier: Modifier = Modifier) {
+fun PswManagerScreen(
+    onPopBack: () -> Boolean,
+    navToResult: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    vm: LoginVM = hiltViewModel(),
+) {
     FramAistTheme {
-        val activity = LocalActivity.current
         Column(
             modifier = modifier
+                .background(Color.Black)
                 .padding(horizontal = 28.dp)
                 .fillMaxSize()
         ) {
-            BackTitleCard("密码管理", {
-                activity?.finish()
-            })
+            var currentPsw by remember { mutableStateOf("") }
+            var newPsw by remember { mutableStateOf("") }
+            var confirmPsw by remember { mutableStateOf("") }
+            val state by vm.modifyPswState
+
+            LaunchedEffect(state) {
+                if (!state.shouldNavigate) return@LaunchedEffect
+                when {
+                    state.success -> {
+                        LL.e("xdd 修改成功")
+                        navToResult.invoke("")
+                        vm.clearModifyState()
+                    }
+
+                    state.error != null -> {
+                        LL.e("xdd 修改失败 $state")
+                        navToResult.invoke(state.error ?: "")
+                        vm.retryModify()
+                    }
+                }
+            }
+            BackTitleCard("密码管理", { onPopBack() })
             Spacer(modifier.height(30.dp))
-            InfoCard()
+            ModifyPswCard(onCurChange = {
+                currentPsw = it
+            }, onNewChange = {
+                newPsw = it
+            }, onConfirmChange = {
+                confirmPsw = it
+            }, modifier = modifier, navToResult = navToResult, onConfirm = {
+                if (checkPsw(currentPsw, newPsw, confirmPsw)) {
+                    vm.modifyPswCompose(currentPsw, newPsw)
+                }
+            })
         }
     }
 }

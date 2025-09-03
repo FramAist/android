@@ -190,7 +190,7 @@ fun VersionCard() {
 }
 
 @Composable
-fun MineScreen(vm: MineVM = hiltViewModel()) {
+fun MineScreen(vm: MineVM = hiltViewModel(), onUserInfoClick: () -> Unit) {
     var userInfo by rememberSaveable { mutableStateOf(MMKVUtil.getUserInfo()) }
     var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
@@ -230,9 +230,7 @@ fun MineScreen(vm: MineVM = hiltViewModel()) {
                 .verticalScroll(rememberScrollState())
         ) {
             TitleCard("我的")
-            UserInfoCard(userInfo) {
-                activity?.navTo<UserInfoActivity>()
-            }
+            UserInfoCard(userInfo, onUserInfoClick)
             ItemCardBlock()
             RecentComposeTitleCard(recent) {
                 activity?.navTo<RecentListActivity>()
@@ -249,7 +247,7 @@ fun MineScreen(vm: MineVM = hiltViewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun UserInfoPreview() {
-    MineScreen()
+    MineScreen(onUserInfoClick = {})
 }
 
 @Composable
