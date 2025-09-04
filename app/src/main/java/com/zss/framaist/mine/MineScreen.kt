@@ -44,8 +44,8 @@ import com.zss.framaist.compose.RecentComposeList
 import com.zss.framaist.compose.TitleCard
 import com.zss.framaist.compose.UserInfoCard
 import com.zss.framaist.compose.ui.theme.FramAistTheme
+import com.zss.framaist.entrance.EntranceSplashActivity
 import com.zss.framaist.fram.ui.navTo
-import com.zss.framaist.login.LoginActivity
 import com.zss.framaist.mine.settings.SettingDialog
 import com.zss.framaist.util.MMKVUtil
 
@@ -208,8 +208,9 @@ fun MineScreen(
         if (showLogoutDialog) {
             LogoutConfirmDialog(
                 onConfirm = {
-                    activity?.navTo<LoginActivity>()
                     MMKVUtil.logout()
+                    activity?.navTo<EntranceSplashActivity>()
+                    activity?.finish()
                 },
                 onDismiss = {
                     showLogoutDialog = false

@@ -1,33 +1,33 @@
 package com.zss.framaist.entrance
 
 import android.annotation.SuppressLint
-import com.zss.base.BaseActivity
-import com.zss.framaist.util.MMKVUtil
-import com.zss.framaist.databinding.ActivitySplashBinding
+import android.os.Bundle
+import androidx.compose.runtime.Composable
+import com.zss.framaist.compose.BaseComposeActivity
 import com.zss.framaist.fram.ui.navTo
-import com.zss.framaist.login.LoginActivity
+import com.zss.framaist.login.LoginScreen
+import com.zss.framaist.util.MMKVUtil
+import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("CustomSplashScreen")
-class EntranceSplashActivity : BaseActivity<ActivitySplashBinding>() {
-    override fun initView() {
+@AndroidEntryPoint
+class EntranceSplashActivity : BaseComposeActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (MMKVUtil.isLogin()) {
             jumpToMain()
-        } else {
-            jumpToLogin()
         }
     }
 
-    override fun initData() {
-
+    @Composable
+    override fun SetScreen() {
+        LoginScreen(onLoginSuccess = {
+            jumpToMain()
+        })
     }
 
     fun jumpToMain() {
         navTo<EntranceMainActivity>()
-        finish()
-    }
-
-    fun jumpToLogin() {
-        navTo<LoginActivity>()
         finish()
     }
 }

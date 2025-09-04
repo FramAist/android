@@ -13,5 +13,8 @@ data object PasswordManagerRoute
 @Serializable
 data object RecentListRoute
 
+@Serializable
+data object LoginRoute
+
 fun NavController.navigateToUserInfoManager(options: NavOptions? = null) =
     navigate(route = UserInfoManagerRoute, options)
