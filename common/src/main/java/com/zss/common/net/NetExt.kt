@@ -68,7 +68,7 @@ fun CoroutineScope.safeLaunch(
                 topActivity.startActivity(
                     Intent(
                         topActivity,
-                        Class.forName("com.zss.framaist.login.LoginActivity")
+                        Class.forName("com.zss.framaist.entrance.EntranceSplashActivity")
                     )
                 )
                 return@launch

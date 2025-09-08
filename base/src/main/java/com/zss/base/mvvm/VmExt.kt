@@ -35,7 +35,7 @@ fun ViewModel.launch(
             try {
                 val context = BaseApplication.instance
                 val intent =
-                    Intent().setClassName(context, "com.zss.framaist.login.LoginActivity")
+                    Intent().setClassName(context, "com.zss.framaist.entrance.EntranceSplashActivity")
                         .apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK // 关键
                         }
